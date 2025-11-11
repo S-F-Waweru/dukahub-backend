@@ -15,14 +15,14 @@ export class JwtService {
     private readonly configService: ConfigService,
   ) {}
 
-  generateAccessTokne(payload: JwtPayload) {
+  generateAccessToken(payload: JwtPayload) {
     return this.nestJwtService.sign(payload, {
       secret: this.configService.get('JWT_ACCESS_SECRET'),
       expiresIn: this.configService.get('JWT_EXPIRATION'),
     });
   }
 
-  generateRefreshToken(payload: { userIs: string }) {
+  generateRefreshToken(payload: { userId: string }) {
     return this.nestJwtService.sign(payload, {
       secret: this.configService.get('JWT_REFRESH_SECRET'),
       expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRATION'),
