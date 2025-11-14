@@ -39,6 +39,20 @@ export class Role extends BaseEntity {
   }
 
   // Business Rules
+  static create(
+    name: string,
+    displayName: string,
+    description?: string,
+    merchantId?: string,
+  ): Role {
+    return new Role({
+      name,
+      displayName,
+      description,
+      merchantId,
+      // isSystemRole defaults to false automatically
+    });
+  }
   public addPermission(permission: Permission): void {
     if (!this.hasPermission(permission.name)) {
       this._permissions.push(permission);

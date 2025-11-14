@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { IUserRepository } from 'src/modules/auth/domain/interfaces/user.reposotory.interface';
 import { PasswordHasherService } from '../../services/password-hasher.service';
-import { User } from 'src/modules/auth/domain/entities/user.emtities';
+import { User } from 'src/modules/auth/domain/entities/user.entity';
 import { Password } from 'src/modules/auth/domain/value-objects/password.vo';
 
 export interface ChangePasswordInput {

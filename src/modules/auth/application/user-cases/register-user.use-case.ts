@@ -4,7 +4,7 @@ import { PasswordHasherService } from '../services/password-hasher.service';
 import { TokenGeneratorService } from '../services/token-generator.service';
 import { RegisterDto } from '../dto/register.dto';
 import { Email } from '../../domain/value-objects/email.vo';
-import { User } from '../../domain/entities/user.emtities';
+import { User } from '../../domain/entities/user.entity';
 import { Password } from '../../domain/value-objects/password.vo';
 
 @Injectable()
