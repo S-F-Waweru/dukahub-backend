@@ -1,14 +1,16 @@
 import { PasswordResetToken } from '../entities/password-reset-token.entity';
 
-export interface IPassswordTokenRepository {
+export interface IPasswordResetTokenRepository {
+  findById(id: string): Promise<PasswordResetToken | null>;
   findByToken(token: string): Promise<PasswordResetToken | null>;
-  save(token: {
-    token: string;
-    userId: string;
-    expiresAt: Date;
-  }): Promise<PasswordResetToken>;
-  markAsUsed(token: string): Promise<void>;
-  deleteByUserId(userId: string): Promise<void>; // optional, clean old tokens
+  findByUserId(userId: string): Promise<PasswordResetToken[]>;
+  save(token: PasswordResetToken): Promise<PasswordResetToken>;
+  update(token: PasswordResetToken): Promise<PasswordResetToken>;
+  delete(id: string): Promise<void>;
+  deleteByUserId(userId: string): Promise<void>;
+  deleteExpiredTokens(): Promise<void>;
 }
 
-export const IPassswordTokenRepository = Symbol('IPassswordTokenRepository');
+export const IPasswordResetTokenRepository = Symbol(
+  'IPasswordResetTokenRepository',
+);

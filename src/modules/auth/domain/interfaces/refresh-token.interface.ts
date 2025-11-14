@@ -1,16 +1,12 @@
-import { JwtPayload } from '../../application/services/jwt.service';
-
+import { RefreshToken } from '../entities/refresh-token.entity';
 export interface IRefreshTokenRepository {
-  save(params: {
-    userId: string;
-    token: string;
-    expiresAt: Date;
-  }): Promise<void>;
-  findByToken(token: string): Promise<JwtPayload | null>;
-
-  delete(token: JwtPayload): Promise<void>;
-
-  deleteAllForUser(userId: string): Promise<void>;
+  findById(id: string): Promise<RefreshToken | null>;
+  findByToken(tokenHash: string): Promise<RefreshToken | null>;
+  findByUserId(userId: string): Promise<RefreshToken[]>;
+  save(token: RefreshToken): Promise<RefreshToken>;
+  update(token: RefreshToken): Promise<RefreshToken>;
+  delete(id: string): Promise<void>;
+  deleteByUserId(userId: string): Promise<void>;
+  deleteExpiredTokens(): Promise<void>;
 }
-
 export const IRefreshTokenRepository = Symbol('IRefreshTokenRepository');

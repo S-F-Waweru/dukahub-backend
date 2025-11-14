@@ -61,11 +61,10 @@ export class User extends BaseEntity {
     });
   }
 
-  // Reconstitute from database
   static fromPersistence(props: {
     id: string;
-    email: string;
-    hashedPassword?: string;
+    email: string; // ✅ Change to string (from database)
+    hashedPassword?: string; // ✅ Also change to string
     firstName: string;
     lastName: string;
     merchantId: string;
@@ -76,9 +75,9 @@ export class User extends BaseEntity {
   }): User {
     return new User({
       id: props.id,
-      email: new Email(props.email),
+      email: new Email(props.email), // ✅ Now props.email is string
       password: props.hashedPassword
-        ? new Password(props.hashedPassword, true)
+        ? new Password(props.hashedPassword, true) // ✅ Now props.hashedPassword is string
         : undefined,
       firstName: props.firstName,
       lastName: props.lastName,

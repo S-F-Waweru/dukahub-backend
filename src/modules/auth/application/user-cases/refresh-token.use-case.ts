@@ -1,6 +1,8 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { IRefreshTokenRepository } from '../../domain/interfaces/refresh-token.interface';
+import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
 import { JwtService } from '../services/jwt.service';
+import { RefreshToken } from '../../domain/entities/refresh-token.entity';
+import { IRefreshTokenRepository } from '../../domain/interfaces/refresh-token.interface';
 
 export interface RefreshTokenInput {
   refreshToken: string;
@@ -15,44 +17,61 @@ export interface RefreshTokenOutput {
 export class RefreshTokenUseCase {
   constructor(
     @Inject(IRefreshTokenRepository)
-    private readonly refreshTokenReposotory: IRefreshTokenRepository,
-    private jwtService: JwtService,
+    private readonly refreshTokenRepository: IRefreshTokenRepository,
+    @Inject(IUserRepository)
+    private readonly userRepository: IUserRepository,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async execute(input: RefreshTokenInput) {
+  async execute(input: RefreshTokenInput): Promise<RefreshTokenOutput> {
     const { refreshToken } = input;
+
     // 1. Find the refresh token in the repository
     const tokenEntity =
-      await this.refreshTokenReposotory.findByToken(refreshToken);
-    // 2. Validate existence and expiry
-    //   || tokenEntity.expiresAt < new Date()
-    if (!tokenEntity) {
-      throw new UnauthorizedException('invalid or expired refresh token');
+      await this.refreshTokenRepository.findByToken(refreshToken);
+
+    // 2. Validate existence and validity
+    if (!tokenEntity || !tokenEntity.isValid()) {
+      throw new UnauthorizedException('Invalid or expired refresh token');
     }
-    // 3. Rotate refresh token (optional)
-    const userId = tokenEntity.userId;
-    const newRefreshToken = this.jwtService.generateRefreshToken({
-      userId: userId,
+
+    // 3. Get user data for token generation
+    const user = await this.userRepository.findById(tokenEntity.userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // 4. Revoke old token
+    tokenEntity.revoke();
+    await this.refreshTokenRepository.update(tokenEntity);
+
+    // 5. Generate new refresh token
+    const newRefreshTokenString = this.jwtService.generateRefreshToken({
+      userId: user.id,
     });
+
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
-    await this.refreshTokenReposotory.save({
-      userId: userId,
-      token: newRefreshToken,
+    // 6. Create new refresh token entity
+    const newTokenEntity = RefreshToken.create(
+      newRefreshTokenString,
+      user.id,
       expiresAt,
-    });
-    // 4. Generate new access token
+    );
 
+    await this.refreshTokenRepository.save(newTokenEntity);
+
+    // 7. Generate new access token
     const accessToken = this.jwtService.generateAccessToken({
-      userId: tokenEntity.userId,
-      merchantId: tokenEntity.merchantId,
-      //   todo : role tokenEntity.role
+      userId: user.id,
+      merchantId: user.merchantId,
+      email: user.email.value,
     });
 
     return {
       accessToken,
-      refreshToken: newRefreshToken,
+      refreshToken: newRefreshTokenString,
     };
   }
 }

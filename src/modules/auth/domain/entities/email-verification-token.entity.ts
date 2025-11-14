@@ -7,7 +7,8 @@ export class EmailVerificationToken extends BaseEntity {
   private _isUsed: boolean;
   private _usedAt?: Date;
 
-  constructor(props: {
+  // ✅ Change to private constructor
+  private constructor(props: {
     id?: string;
     tokenHash: string;
     userId: string;
@@ -25,6 +26,38 @@ export class EmailVerificationToken extends BaseEntity {
     this.validate();
   }
 
+  // ✅ Add factory method for new tokens
+  static create(
+    tokenHash: string,
+    userId: string,
+    expiresAt: Date,
+  ): EmailVerificationToken {
+    return new EmailVerificationToken({
+      tokenHash,
+      userId,
+      expiresAt,
+    });
+  }
+
+  // ✅ Add fromPersistence for database reconstitution
+  static fromPersistence(props: {
+    id: string;
+    tokenHash: string;
+    userId: string;
+    expiresAt: Date;
+    isUsed: boolean;
+    usedAt?: Date;
+  }): EmailVerificationToken {
+    return new EmailVerificationToken({
+      id: props.id,
+      tokenHash: props.tokenHash,
+      userId: props.userId,
+      expiresAt: props.expiresAt,
+      isUsed: props.isUsed,
+      usedAt: props.usedAt,
+    });
+  }
+
   private validate(): void {
     if (!this._tokenHash) {
       throw new Error('Token hash is required');
@@ -39,6 +72,7 @@ export class EmailVerificationToken extends BaseEntity {
       throw new Error('Token must have a future expiration date');
     }
   }
+
   // Business methods
   public markAsUsed(): void {
     this._isUsed = true;

@@ -1,10 +1,10 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
-import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
+import { IUserRepository } from '../../domain/interfaces/user.reposotory.interface';
 import { PasswordHasherService } from '../services/password-hasher.service';
 import { TokenGeneratorService } from '../services/token-generator.service';
 import { RegisterDto } from '../dto/register.dto';
 import { Email } from '../../domain/value-objects/email.vo';
-import { User } from '../../domain/entities/user.entity';
+import { User } from '../../domain/entities/user.emtities';
 import { Password } from '../../domain/value-objects/password.vo';
 
 @Injectable()

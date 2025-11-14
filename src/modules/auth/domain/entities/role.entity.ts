@@ -53,6 +53,27 @@ export class Role extends BaseEntity {
       // isSystemRole defaults to false automatically
     });
   }
+  // ✅ ADD THIS: Factory method for database reconstitution
+  static fromPersistence(props: {
+    id: string;
+    name: string;
+    displayName: string;
+    description?: string;
+    isSystemRole: boolean;
+    merchantId?: string;
+    permissions: Permission[];
+  }): Role {
+    return new Role({
+      id: props.id,
+      name: props.name,
+      displayName: props.displayName,
+      description: props.description,
+      isSystemRole: props.isSystemRole,
+      merchantId: props.merchantId,
+      permissions: props.permissions,
+    });
+  }
+
   public addPermission(permission: Permission): void {
     if (!this.hasPermission(permission.name)) {
       this._permissions.push(permission);

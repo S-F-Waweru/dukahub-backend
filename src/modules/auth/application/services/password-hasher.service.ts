@@ -19,3 +19,9 @@ export class PasswordHasherService {
     return bcrypt.compare(plainPassword, hashedPassword);
   }
 }
+export interface IPasswordHasher {
+  hash(password: string): Promise<string>;
+  compare(password: string, hashedPassword: string): Promise<boolean>;
+}
+
+export const IPasswordHasher = Symbol('IPasswordHasher');

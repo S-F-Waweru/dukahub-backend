@@ -36,16 +36,6 @@ export class Permission extends BaseEntity {
     });
   }
 
-  static fromPersistence(props: {
-    id: string;
-    name: string;
-    resource: string;
-    action: string;
-    description?: string;
-  }): Permission {
-    return new Permission(props);
-  }
-
   private validate(): void {
     if (!this._name || this._name.trim().length === 0) {
       throw new Error('Permission name is required');
@@ -60,6 +50,23 @@ export class Permission extends BaseEntity {
     if (this._name !== `${this._resource}_${this._action}`) {
       throw new Error('Permission name must follow format: resource_action');
     }
+  }
+
+  // ✅ ADD THIS: Factory method for database reconstitution
+  static fromPersistence(props: {
+    id: string;
+    name: string;
+    resource: string;
+    action: string;
+    description?: string;
+  }): Permission {
+    return new Permission({
+      id: props.id,
+      name: props.name,
+      resource: props.resource,
+      action: props.action,
+      description: props.description,
+    });
   }
 
   // Getters
