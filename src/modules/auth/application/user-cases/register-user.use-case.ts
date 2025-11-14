@@ -1,5 +1,5 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
-import { IUserRepository } from '../../domain/interfaces/user.reposotory.interface';
+import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
 import { PasswordHasherService } from '../services/password-hasher.service';
 import { TokenGeneratorService } from '../services/token-generator.service';
 import { RegisterDto } from '../dto/register.dto';

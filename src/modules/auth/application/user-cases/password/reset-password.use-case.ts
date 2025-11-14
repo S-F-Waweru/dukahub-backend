@@ -4,7 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { IUserRepository } from 'src/modules/auth/domain/interfaces/user.reposotory.interface';
+import { IUserRepository } from 'src/modules/auth/domain/interfaces/user.repository.interface';
 import { IPassswordTokenRepository } from 'src/modules/auth/domain/repositories/password-reset-token.repository.interface';
 import { PasswordHasherService } from '../../services/password-hasher.service';
 import { PasswordResetToken } from 'src/modules/auth/domain/entities/password-reset-token.entity';

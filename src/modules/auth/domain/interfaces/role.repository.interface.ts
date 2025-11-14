@@ -5,7 +5,11 @@ export interface IRoleRepository {
   findByName(name: string): Promise<Role | null>;
   save(role: Role): Promise<Role>;
   getUserRoles(userId: string): Promise<Role[]>;
-  assignToUser(userId: string, roleId: string): Promise<void>;
+  assignToUser(
+    userId: string,
+    roleId: string,
+    assignedBy?: string,
+  ): Promise<void>;
   removeFromUser(userId: string, roleId: string): Promise<void>;
 }
 

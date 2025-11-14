@@ -4,7 +4,7 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
-import { IUserRepository } from '../../domain/interfaces/user.reposotory.interface';
+import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
 import { IEmailVerificationTokenRepository } from '../../domain/repositories/email-verification-token.repository.interface';
 
 export interface VerifyEmailInput {

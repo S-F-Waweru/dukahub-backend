@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { IUserRepository } from 'src/modules/auth/domain/interfaces/user.reposotory.interface';
+import { IUserRepository } from 'src/modules/auth/domain/interfaces/user.repository.interface';
 import { IPassswordTokenRepository } from 'src/modules/auth/domain/repositories/password-reset-token.repository.interface';
 import { IEmailSenderService } from '../../services/email-sender.service';
 import { Email } from 'src/modules/auth/domain/value-objects/email.vo';

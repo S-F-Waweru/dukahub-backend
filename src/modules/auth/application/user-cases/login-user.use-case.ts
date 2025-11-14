@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { IUserRepository } from '../../domain/interfaces/user.reposotory.interface';
+import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
 import { LoginDto } from '../dto/login.dto';
 import { Email } from '../../domain/value-objects/email.vo';
 import { PasswordHasherService } from '../services/password-hasher.service';
