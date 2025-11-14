@@ -14,7 +14,7 @@ import { RegisterUserUseCase } from '../../application/user-cases/register-user.
 import { RefreshTokenUseCase } from '../../application/user-cases/refresh-token.use-case';
 import { VerifyEmailUseCase } from '../../application/user-cases/verify-email-use-case';
 import { ResendVerificationUseCase } from '../../application/user-cases/resend-verification.use-case';
-import { LoginUserUsecase } from '../../application/user-cases/login-user.use-case';
+import { LoginUserUseCase } from '../../application/user-cases/login-user-use-case.service';
 import { LogoutUseCase } from '../../application/user-cases/logout-user.use-case';
 import { RegisterDto } from '../../application/dto/register.dto';
 import { LoginDto } from '../../application/dto/login.dto';
@@ -34,7 +34,7 @@ interface AuthRequest extends Request {
 export class AuthController {
   constructor(
     private readonly registerUserUseCase: RegisterUserUseCase,
-    private readonly loginUserUseCase: LoginUserUsecase,
+    private readonly loginUserUseCase: LoginUserUseCase,
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
     private readonly logoutUserUseCase: LogoutUseCase,
     private readonly verifyEmailUseCase: VerifyEmailUseCase,
@@ -45,6 +45,7 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: RegisterDto) {
+
     const user = await this.registerUserUseCase.execute({
       email: dto.email,
       password: dto.password,

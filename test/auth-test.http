@@ -1,0 +1,714 @@
+### ============================================
+### ENVIRONMENT VARIABLES
+### ============================================
+@baseUrl = http://localhost:5570
+@contentType = application/json
+
+# Test Merchant UUID (Replace with actual UUID from your database)
+@merchantId = 123e4567-e89b-12d3-a456-426614174000
+
+# Test Users
+@user1Email = john.doe@dukahub.test
+@user2Email = jane.smith@dukahub.test
+@adminEmail = admin@dukahub.test
+
+@password = SecurePass123!@#
+@weakPassword = 12345
+
+
+### ============================================
+### 1. USER REGISTRATION TESTS
+### ============================================
+
+### 1.1 ✅ Successful Registration - User 1
+# @name registerUser1
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}",
+  "firstName": "John",
+  "lastName": "Doe",
+  "merchantId": "{{merchantId}}"
+}
+
+
+### 1.2 ❌ Register with Duplicate Email (Should Fail - 409)
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}",
+  "firstName": "John",
+  "lastName": "Duplicate",
+  "merchantId": "{{merchantId}}"
+}
+
+
+### 1.3 ❌ Register with Invalid Email (Should Fail - 400)
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "invalid-email",
+  "password": "{{password}}",
+  "firstName": "Invalid",
+  "lastName": "Email",
+  "merchantId": "{{merchantId}}"
+}
+
+
+### 1.4 ❌ Register with Weak Password (Should Fail - 400)
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "weak@dukahub.test",
+  "password": "{{weakPassword}}",
+  "firstName": "Weak",
+  "lastName": "Password",
+  "merchantId": "{{merchantId}}"
+}
+
+
+### 1.5 ❌ Register with Missing Required Fields (Should Fail - 400)
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "missing@dukahub.test",
+  "password": "{{password}}"
+}
+
+
+### 1.6 ❌ Register with Invalid UUID merchantId (Should Fail - 400)
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "invalid.merchant@dukahub.test",
+  "password": "{{password}}",
+  "firstName": "Invalid",
+  "lastName": "Merchant",
+  "merchantId": "not-a-uuid"
+}
+
+
+### 1.7 ✅ Register Second User for Multi-User Tests
+# @name registerUser2
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user2Email}}",
+  "password": "{{password}}",
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "merchantId": "{{merchantId}}"
+}
+
+
+### 1.8 ✅ Register Admin User
+# @name registerAdmin
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{password}}",
+  "firstName": "Admin",
+  "lastName": "User",
+  "merchantId": "{{merchantId}}"
+}
+
+
+### ============================================
+### 2. EMAIL VERIFICATION TESTS
+### ============================================
+
+### 2.1 ✅ Resend Verification Email
+POST {{baseUrl}}/auth/resend-verification
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}"
+}
+
+
+### 2.2 ❌ Resend to Non-Existent Email (Should Fail - 404)
+POST {{baseUrl}}/auth/resend-verification
+Content-Type: {{contentType}}
+
+{
+  "email": "nonexistent@dukahub.test"
+}
+
+
+### 2.3 ❌ Resend with Invalid Email Format (Should Fail - 400)
+POST {{baseUrl}}/auth/resend-verification
+Content-Type: {{contentType}}
+
+{
+  "email": "invalid-email-format"
+}
+
+
+### 2.4 ✅ Verify Email with Token
+# NOTE: Replace token with actual token from email/database
+POST {{baseUrl}}/auth/verify-email
+Content-Type: {{contentType}}
+
+{
+  "token": "paste-verification-token-from-email-here"
+}
+
+
+### 2.5 ❌ Verify with Invalid Token (Should Fail - 400)
+POST {{baseUrl}}/auth/verify-email
+Content-Type: {{contentType}}
+
+{
+  "token": "invalid-token-12345"
+}
+
+
+### 2.6 ❌ Verify with Empty Token (Should Fail - 400)
+POST {{baseUrl}}/auth/verify-email
+Content-Type: {{contentType}}
+
+{
+  "token": ""
+}
+
+
+### 2.7 ❌ Verify Already Verified Email (Should Fail - 400)
+POST {{baseUrl}}/auth/verify-email
+Content-Type: {{contentType}}
+
+{
+  "token": "already-used-token"
+}
+
+
+### ============================================
+### 3. LOGIN TESTS
+### ============================================
+
+### 3.1 ✅ Successful Login - User 1
+# @name loginUser1
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}"
+}
+
+
+### Extract access token
+@accessToken = {{loginUser1.response.body.accessToken}}
+
+
+### 3.2 ❌ Login with Wrong Password (Should Fail - 401)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "WrongPassword123!@#"
+}
+
+
+### 3.3 ❌ Login with Non-Existent Email (Should Fail - 401)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "nonexistent@dukahub.test",
+  "password": "{{password}}"
+}
+
+
+### 3.4 ❌ Login with Invalid Email Format (Should Fail - 400)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "invalid-email",
+  "password": "{{password}}"
+}
+
+
+### 3.5 ❌ Login with Missing Password (Should Fail - 400)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}"
+}
+
+
+### 3.6 ❌ Login with Unverified Email (Should Fail - 403)
+# Register new user first, then try login without verification
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "unverified@dukahub.test",
+  "password": "{{password}}"
+}
+
+
+### 3.7 ✅ Successful Login - User 2
+# @name loginUser2
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user2Email}}",
+  "password": "{{password}}"
+}
+
+
+@accessToken2 = {{loginUser2.response.body.accessToken}}
+
+
+### ============================================
+### 4. AUTHENTICATED USER PROFILE TESTS
+### ============================================
+
+### 4.1 ✅ Get Current User Profile
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{accessToken}}
+
+
+### 4.2 ❌ Get Profile Without Token (Should Fail - 401)
+GET {{baseUrl}}/auth/me
+
+
+### 4.3 ❌ Get Profile with Invalid Token (Should Fail - 401)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer invalid_token_here
+
+
+### 4.4 ❌ Get Profile with Expired Token (Should Fail - 401)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.expired.token
+
+
+### 4.5 ❌ Get Profile with Malformed Token (Should Fail - 401)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer malformed-token
+
+
+### ============================================
+### 5. REFRESH TOKEN TESTS
+### ============================================
+
+### 5.1 ✅ Refresh Access Token
+# NOTE: refreshToken is automatically sent via httpOnly cookie
+POST {{baseUrl}}/auth/refresh
+
+
+### 5.2 ❌ Refresh Without Cookie (Should Fail - 401)
+# Clear cookies first, then try refresh
+POST {{baseUrl}}/auth/refresh
+
+
+### 5.3 ❌ Refresh with Invalid Token (Should Fail - 401)
+# Manually set invalid cookie
+POST {{baseUrl}}/auth/refresh
+Cookie: refreshToken=invalid_refresh_token
+
+
+### 5.4 ❌ Refresh with Expired Token (Should Fail - 401)
+POST {{baseUrl}}/auth/refresh
+Cookie: refreshToken=expired_refresh_token
+
+
+### 5.5 ✅ Multiple Refresh Requests (Token Rotation)
+POST {{baseUrl}}/auth/refresh
+
+###
+POST {{baseUrl}}/auth/refresh
+
+###
+POST {{baseUrl}}/auth/refresh
+
+
+### ============================================
+### 6. LOGOUT TESTS
+### ============================================
+
+### 6.1 ✅ Successful Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{accessToken}}
+
+
+### 6.2 ❌ Logout Without Token (Should Fail - 401)
+POST {{baseUrl}}/auth/logout
+
+
+### 6.3 ❌ Logout with Invalid Token (Should Fail - 401)
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer invalid_token
+
+
+### 6.4 ✅ Logout User 2
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{accessToken2}}
+
+
+### 6.5 ❌ Access Protected Route After Logout (Should Fail - 401)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{accessToken}}
+
+
+### 6.6 ❌ Refresh Token After Logout (Should Fail - 401)
+POST {{baseUrl}}/auth/refresh
+
+
+### ============================================
+### 7. PASSWORD RESET TESTS (If Implemented)
+### ============================================
+
+### 7.1 ✅ Request Password Reset
+POST {{baseUrl}}/auth/request-password-reset
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}"
+}
+
+
+### 7.2 ❌ Request Reset for Non-Existent Email (Should Fail - 404)
+POST {{baseUrl}}/auth/request-password-reset
+Content-Type: {{contentType}}
+
+{
+  "email": "nonexistent@dukahub.test"
+}
+
+
+### 7.3 ❌ Request Reset with Invalid Email (Should Fail - 400)
+POST {{baseUrl}}/auth/request-password-reset
+Content-Type: {{contentType}}
+
+{
+  "email": "invalid-email"
+}
+
+
+### 7.4 ✅ Reset Password with Valid Token
+# NOTE: Replace token with actual token from email
+POST {{baseUrl}}/auth/reset-password
+Content-Type: {{contentType}}
+
+{
+  "token": "paste-reset-token-from-email",
+  "newPassword": "NewSecurePass123!@#"
+}
+
+
+### 7.5 ❌ Reset with Invalid Token (Should Fail - 400)
+POST {{baseUrl}}/auth/reset-password
+Content-Type: {{contentType}}
+
+{
+  "token": "invalid-token",
+  "newPassword": "NewSecurePass123!@#"
+}
+
+
+### 7.6 ❌ Reset with Weak Password (Should Fail - 400)
+POST {{baseUrl}}/auth/reset-password
+Content-Type: {{contentType}}
+
+{
+  "token": "valid-token",
+  "newPassword": "12345"
+}
+
+
+### 7.7 ✅ Login with New Password After Reset
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "NewSecurePass123!@#"
+}
+
+
+### ============================================
+### 8. CHANGE PASSWORD TESTS (Authenticated)
+### ============================================
+
+### 8.1 ✅ Login First to Get Token
+# @name loginForPasswordChange
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}"
+}
+
+
+@changePasswordToken = {{loginForPasswordChange.response.body.accessToken}}
+
+
+### 8.2 ✅ Change Password Successfully
+POST {{baseUrl}}/auth/change-password
+Authorization: Bearer {{changePasswordToken}}
+Content-Type: {{contentType}}
+
+{
+  "currentPassword": "{{password}}",
+  "newPassword": "UpdatedPass123!@#"
+}
+
+
+### 8.3 ❌ Change Password with Wrong Current Password (Should Fail - 401)
+POST {{baseUrl}}/auth/change-password
+Authorization: Bearer {{changePasswordToken}}
+Content-Type: {{contentType}}
+
+{
+  "currentPassword": "WrongPassword123",
+  "newPassword": "UpdatedPass123!@#"
+}
+
+
+### 8.4 ❌ Change Password with Weak New Password (Should Fail - 400)
+POST {{baseUrl}}/auth/change-password
+Authorization: Bearer {{changePasswordToken}}
+Content-Type: {{contentType}}
+
+{
+  "currentPassword": "{{password}}",
+  "newPassword": "12345"
+}
+
+
+### 8.5 ❌ Change Password Without Token (Should Fail - 401)
+POST {{baseUrl}}/auth/change-password
+Content-Type: {{contentType}}
+
+{
+  "currentPassword": "{{password}}",
+  "newPassword": "UpdatedPass123!@#"
+}
+
+
+### 8.6 ✅ Login with Updated Password
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "UpdatedPass123!@#"
+}
+
+
+### ============================================
+### 9. CONCURRENT SESSION TESTS
+### ============================================
+
+### 9.1 ✅ Login from Multiple Devices (User 1)
+# @name device1Login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}"
+}
+
+
+@device1Token = {{device1Login.response.body.accessToken}}
+
+
+### 9.2 ✅ Login from Device 2 (User 1)
+# @name device2Login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}"
+}
+
+
+@device2Token = {{device2Login.response.body.accessToken}}
+
+
+### 9.3 ✅ Both Devices Access Profile
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{device1Token}}
+
+###
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{device2Token}}
+
+
+### 9.4 ✅ Logout from Device 1
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{device1Token}}
+
+
+### 9.5 ❌ Device 1 Token Should Be Invalid After Logout
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{device1Token}}
+
+
+### 9.6 ✅ Device 2 Should Still Work
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{device2Token}}
+
+
+### ============================================
+### 10. RATE LIMITING TESTS (If Implemented)
+### ============================================
+
+### 10.1 Rapid Login Attempts (Should trigger rate limit)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}"
+}
+
+###
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}"
+}
+
+###
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}"
+}
+
+###
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}"
+}
+
+###
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}"
+}
+
+
+### 10.2 Rapid Registration Attempts
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "spam1@dukahub.test",
+  "password": "{{password}}",
+  "firstName": "Spam",
+  "lastName": "User1",
+  "merchantId": "{{merchantId}}"
+}
+
+###
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "spam2@dukahub.test",
+  "password": "{{password}}",
+  "firstName": "Spam",
+  "lastName": "User2",
+  "merchantId": "{{merchantId}}"
+}
+
+###
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "spam3@dukahub.test",
+  "password": "{{password}}",
+  "firstName": "Spam",
+  "lastName": "User3",
+  "merchantId": "{{merchantId}}"
+}
+
+
+### ============================================
+### 11. SECURITY EDGE CASES
+### ============================================
+
+### 11.1 ❌ SQL Injection Attempt in Email (Should Fail - 400)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@dukahub.test' OR '1'='1",
+  "password": "{{password}}"
+}
+
+
+### 11.2 ❌ XSS Attempt in Name Fields (Should Be Sanitized)
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "xss@dukahub.test",
+  "password": "{{password}}",
+  "firstName": "<script>alert('XSS')</script>",
+  "lastName": "User",
+  "merchantId": "{{merchantId}}"
+}
+
+
+### 11.3 ❌ Very Long Password (Should Fail - 400)
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "longpass@dukahub.test",
+  "password": "VeryLongPasswordThatExceedsMaximumAllowedLengthForSecurityReasons123!@#$%^&*()VeryLongPasswordThatExceedsMaximumAllowedLengthForSecurityReasons123!@#$%^&*()",
+  "firstName": "Long",
+  "lastName": "Pass",
+  "merchantId": "{{merchantId}}"
+}
+
+
+### 11.4 ❌ Unicode/Special Characters in Email
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "test@dükahub.test",
+  "password": "{{password}}",
+  "firstName": "Unicode",
+  "lastName": "Test",
+  "merchantId": "{{merchantId}}"
+}
+
+
+### 11.5 ❌ Token Tampering (Modified JWT)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.tamperedpayload.tampered

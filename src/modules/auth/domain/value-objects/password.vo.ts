@@ -6,6 +6,7 @@ export class Password {
     }
   }
   private validate(): void {
+    console.log(this._value);
     if (this._value.length < 8) {
       throw new Error('Password must be at least 8 characters');
     }

@@ -21,6 +21,7 @@ export class RegisterUserUseCase {
   ) {}
 
   async execute(dto: RegisterDto) {
+    console.log('debug:(register)', dto);
     // 1. Check if user already exists
     const email = new Email(dto.email);
     const exists = await this.userRepository.exists(email);
@@ -35,13 +36,14 @@ export class RegisterUserUseCase {
       dto.lastName,
       dto.merchantId,
     );
+    console.log('debug:(register)', user);
     // 3. Hash password
     const hashedPassword = await this.passwordHasher.hash(user.password!.value);
     const securePassword = new Password(hashedPassword, true);
+    console.log('debug:(register)-password', securePassword);
     // Update user with hashed password
     const userWithHashedPassword = User.fromPersistence({
       id: user.id,
-      //todo find fix for tihi
       email: dto.email,
       hashedPassword: securePassword.value,
       firstName: user.firstName,
@@ -51,6 +53,7 @@ export class RegisterUserUseCase {
       isEmailVerified: user.isEmailVerified,
       status: user.status,
     });
+
     // 4. Save user
     const savedUSer = await this.userRepository.save(userWithHashedPassword);
     // 5. Generate email verification token (store this in a verification tokens table)

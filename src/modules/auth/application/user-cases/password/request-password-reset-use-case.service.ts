@@ -18,7 +18,7 @@ export class RequestPasswordResetUseCase {
     private readonly userRepository: IUserRepository,
     @Inject(IPasswordResetTokenRepository)
     private readonly passwordTokenRepository: IPasswordResetTokenRepository,
-    private readonly emailSenderService: IEmailSenderService,
+    // private readonly emailSenderService: IEmailSenderService,
     private readonly tokenGeneratorService: TokenGeneratorService,
   ) {}
 

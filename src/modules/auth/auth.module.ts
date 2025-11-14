@@ -46,7 +46,7 @@ import { IRoleRepository } from './domain/interfaces/role.repository.interface';
 import { IPermissionRepository } from './domain/interfaces/permission.repository.interface';
 import { IUserRepository } from './domain/interfaces/user.repository.interface';
 import { UserRoleSchema } from './infrastructure/persistence/schemas/user-role.schema';
-import { LoginUserUsecase } from './application/user-cases/login-user.use-case';
+import { LoginUserUseCase } from './application/user-cases/login-user-use-case.service';
 import { LogoutUseCase } from './application/user-cases/logout-user.use-case';
 import { RequestPasswordResetUseCase } from './application/user-cases/password/request-password-reset-use-case.service';
 import { ChangePasswordUseCase } from './application/user-cases/password/change-password-use-case.service';
@@ -91,7 +91,7 @@ import UserRepository from './infrastructure/repositories/user.repository';
 
     // Use Cases
     RegisterUserUseCase,
-    LoginUserUsecase,
+    LoginUserUseCase,
     RefreshTokenUseCase,
     LogoutUseCase,
     VerifyEmailUseCase,

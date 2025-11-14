@@ -26,8 +26,8 @@ export class ResendVerificationUseCase {
     private readonly userRepository: IUserRepository,
     @Inject(IEmailVerificationTokenRepository)
     private readonly emailVerificationTokenRepository: IEmailVerificationTokenRepository,
-    private readonly tokenGenerator: TokenGeneratorService,
-    private readonly emailSender: IEmailSenderService,
+    // private readonly tokenGenerator: TokenGeneratorService,
+    // private readonly emailSender: IEmailSenderService,
   ) {}
 
   async execute(

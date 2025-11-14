@@ -13,31 +13,32 @@ import { IRefreshTokenRepository } from '../../domain/interfaces/refresh-token.i
 import { RefreshToken } from '../../domain/entities/refresh-token.entity';
 
 @Injectable()
-export class LoginUserUsecase {
+export class LoginUserUseCase {
   constructor(
     @Inject(IUserRepository)
-    private readonly userReposotory: IUserRepository,
+    private readonly userRepository: IUserRepository,
     private readonly passwordHasher: PasswordHasherService,
     private readonly jwtService: JwtService,
+    @Inject(IRefreshTokenRepository)
     private readonly refreshTokenRepository: IRefreshTokenRepository,
   ) {}
 
   async execute(dto: LoginDto) {
     // 1. Find user by email in database
     const email = new Email(dto.email);
-    const user = await this.userReposotory.findByEmail(email);
+    const user = await this.userRepository.findByEmail(email);
 
     // 2. Check if user exists (throw error if not found)
     if (!user) {
       throw new UnauthorizedException('Invalid credentials'); // Use UnauthorizedException, not NotFoundException
     }
     // 3. Verify the provided password against stored password hash
-    if (!user.password || typeof user.password !== 'string') {
+    if (!user.password) {
       throw new NotFoundException('User password not found or invalid');
     }
     const isPasswordValid = await this.passwordHasher.compare(
       dto.password,
-      user.password,
+      user.password.value,
     );
 
     // 4. Check if password is valid (throw error if incorrect)
@@ -63,10 +64,10 @@ export class LoginUserUsecase {
 
     const refreshTokenEntity = RefreshToken.create(
       refreshToken, // The token string
-      user.id,      // User ID
-      expiresAt     // Expiration date
+      user.id, // User ID
+      expiresAt, // Expiration date
     );
-
+    await this.refreshTokenRepository.save(refreshTokenEntity);
 
     // 8. Return tokens and user information (excluding sensitive data)
     return {
