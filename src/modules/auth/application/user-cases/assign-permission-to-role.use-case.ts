@@ -1,7 +1,8 @@
  import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IRoleRepository } from '../../domain/interfaces/role.repository.interface';
-import { IPermissionRepository } from '../../domain/repositories/permission.repository.interface';
-import { AssignPermissionToRoleDto } from '../dto/Assign-permission-to-role.dto';
+import { IPermissionRepository } from '../../domain/interfaces/permission.repository.interface';
+ import { AssignPermissionToRoleDto } from '../dto/assign-permission-to-role.dto';
+
  
  @Injectable()
  export class AssignPermissionToRoleUseCase {

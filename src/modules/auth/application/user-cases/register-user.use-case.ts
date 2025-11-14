@@ -1,17 +1,21 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
-import { IUserRepository } from '../../domain/interfaces/user.reposotory.interface';
+import { User } from '../../domain/entities/user.entity';
 import { PasswordHasherService } from '../services/password-hasher.service';
 import { TokenGeneratorService } from '../services/token-generator.service';
 import { RegisterDto } from '../dto/register.dto';
 import { Email } from '../../domain/value-objects/email.vo';
-import { User } from '../../domain/entities/user.emtities';
+
 import { Password } from '../../domain/value-objects/password.vo';
+import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
+import { IRefreshTokenRepository } from '../../domain/interfaces/refresh-token.interface';
 
 @Injectable()
 export class RegisterUserUseCase {
   constructor(
     @Inject(IUserRepository)
     private readonly userRepository: IUserRepository,
+    @Inject(IRefreshTokenRepository)
+    private readonly refreshTokenRepository: IRefreshTokenRepository,
     private readonly passwordHasher: PasswordHasherService,
     private readonly tokenGenerator: TokenGeneratorService,
   ) {}
@@ -37,7 +41,8 @@ export class RegisterUserUseCase {
     // Update user with hashed password
     const userWithHashedPassword = User.fromPersistence({
       id: user.id,
-      email: user.email,
+      //todo find fix for tihi
+      email: dto.email,
       hashedPassword: securePassword.value,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -49,8 +54,9 @@ export class RegisterUserUseCase {
     // 4. Save user
     const savedUSer = await this.userRepository.save(userWithHashedPassword);
     // 5. Generate email verification token (store this in a verification tokens table)
-    const verificationToken = this.tokenGenerator.generate();
-    // TODO: Save token and send email (we'll add this later)
+    // const verificationToken = this.tokenGenerator.generate();
+    // // TODO: Save token and send email (we'll add this later)
+    // await this.refreshTokenRepository.save(verificationToken);
 
     return {
       id: savedUSer.id,

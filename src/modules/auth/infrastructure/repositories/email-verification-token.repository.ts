@@ -4,7 +4,7 @@ import { Repository, LessThan } from 'typeorm';
 
 import { EmailVerificationToken } from '../../domain/entities/email-verification-token.entity';
 import { EmailVerificationTokenSchema } from '../persistence/schemas/email-verification-token.schema';
-import { IEmailVerificationTokenRepository } from '../../domain/repositories/email-verification-token.repository.interface';
+import { IEmailVerificationTokenRepository } from '../../domain/interfaces/email-verification-token.repository.interface';
 
 @Injectable()
 export class EmailVerificationTokenRepository

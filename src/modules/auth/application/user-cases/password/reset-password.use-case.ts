@@ -9,7 +9,7 @@ import { IUserRepository } from 'src/modules/auth/domain/interfaces/user.reposit
 import { PasswordHasherService } from '../../services/password-hasher.service';
 
 import { Password } from 'src/modules/auth/domain/value-objects/password.vo';
-import { IPasswordResetTokenRepository } from '../../../domain/repositories/password-reset-token.repository.interface';
+import { IPasswordResetTokenRepository } from '../../../domain/interfaces/password-reset-token.repository.interface';
 
 export interface ResetPasswordInput {
   token: string;

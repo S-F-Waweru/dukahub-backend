@@ -1,89 +1,108 @@
 import {
-  Injectable,
-  Inject,
   BadRequestException,
+  Inject,
+  Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
-import { IEmailVerificationTokenRepository } from '../../domain/repositories/email-verification-token.repository.interface';
+import { IEmailVerificationTokenRepository } from '../../domain/interfaces/email-verification-token.repository.interface';
+import { TokenGeneratorService } from '../services/token-generator.service';
+import { IEmailSenderService } from '../services/email-sender.service';
+import { Email } from '../../domain/value-objects/email.vo';
 
-export interface VerifyEmailInput {
-  token: string;
+export interface ResendVerificationInput {
+  email: string;
 }
 
-export interface VerifyEmailOutput {
+export interface ResendVerificationOutput {
   success: boolean;
   message: string;
-  userId: string;
-}
-export interface VerifyEmailInput {
-  token: string;
 }
 
-export interface VerifyEmailOutput {
-  success: boolean;
-  message: string;
-  userId: string;
-}
 @Injectable()
-export class VerifyEmailUseCase {
+export class ResendVerificationUseCase {
   constructor(
     @Inject(IUserRepository)
     private readonly userRepository: IUserRepository,
     @Inject(IEmailVerificationTokenRepository)
     private readonly emailVerificationTokenRepository: IEmailVerificationTokenRepository,
+    private readonly tokenGenerator: TokenGeneratorService,
+    private readonly emailSender: IEmailSenderService,
   ) {}
 
-  async execute(input: VerifyEmailInput): Promise<VerifyEmailOutput> {
-    // STEP 1: Find the verification token in the database
-    const tokenEntity = await this.emailVerificationTokenRepository.findByToken(
-      input.token,
-    );
+  async execute(
+    input: ResendVerificationInput,
+  ): Promise<ResendVerificationOutput> {
+    // 1. Find user by email
+    const email = new Email(input.email);
+    const user = await this.userRepository.findByEmail(email);
 
-    // STEP 2: Check if token exists
-    if (!tokenEntity) {
-      throw new NotFoundException('Invalid verification token');
-    }
-
-    // STEP 3: Check if token has expired
-    if (tokenEntity.isExpired()) {
-      // Clean up expired token
-      await this.emailVerificationTokenRepository.delete(tokenEntity.id);
-      throw new BadRequestException('Verification token has expired');
-    }
-
-    // STEP 4: Check if token has already been used
-    if (tokenEntity.isUsed) {
-      throw new BadRequestException('Verification token already used');
-    }
-
-    // STEP 5: Find the user associated with this token
-    const user = await this.userRepository.findById(tokenEntity.userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    // STEP 6: Check if user is already verified (idempotency check)
+    // 2. Check if user is already verified
     if (user.isEmailVerified) {
       throw new BadRequestException('Email is already verified');
     }
 
-    // STEP 7: Verify the user's email address
-    user.verifyEmail();
-    await this.userRepository.update(user);
-
-    // STEP 8: Mark the token as used to prevent reuse
-    tokenEntity.markAsUsed();
-    await this.emailVerificationTokenRepository.update(tokenEntity);
-
-    // STEP 9: Clean up - delete all verification tokens for this user
+    // 3. Delete any existing verification tokens for this user
     await this.emailVerificationTokenRepository.deleteByUserId(user.id);
 
-    // STEP 11: Return success response
+    // todo  : fix this use case and its dependencies
+    // // 4. Generate new verification token
+    // const verificationToken = this.tokenGenerator.generate();
+    // const expiresAt = new Date();
+    // expiresAt.setHours(expiresAt.getHours() + 24); // 24 hours expiry
+
+    // 5. Create and save new verification token
+    // const tokenEntity = await this.emailVerificationTokenRepository.save({
+    //   tokenHash: verificationToken, // In production, hash this!
+    //   userId: user.id,
+    //   expiresAt: expiresAt,
+    //   _tokenHash: '',
+    //   _userId: '',
+    //   _expiresAt: undefined,
+    //   _isUsed: false,
+    //   validate: function (): void {
+    //     throw new Error('Function not implemented.');
+    //   },
+    //   markAsUsed: function (): void {
+    //     throw new Error('Function not implemented.');
+    //   },
+    //   isExpired: function (): boolean {
+    //     throw new Error('Function not implemented.');
+    //   },
+    //   isValid: function (): boolean {
+    //     throw new Error('Function not implemented.');
+    //   },
+    //   isUsed: false,
+    //   usedAt: undefined,
+    //   _id: '',
+    //   _createdAt: undefined,
+    //   _updatedAt: undefined,
+    //   id: '',
+    //   createdAt: undefined,
+    //   updatedAt: undefined,
+    //   touch: function (): void {
+    //     throw new Error('Function not implemented.');
+    //   },
+    // });
+
+    // 6. Send verification email
+    // const emailSent = await this.emailSender.sendVerificationEmail(
+    //   user.email.value,
+    //   user.getFullName(),
+    //   verificationToken,
+    // );
+
+    // if (!emailSent) {
+    //   throw new Error('Failed to send verification email');
+    // }
+
     return {
       success: true,
-      message: 'Email verified successfully',
-      userId: user.id,
+      message: 'Verification email sent successfully',
     };
   }
 }

@@ -1,5 +1,5 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
-import { IPermissionRepository } from '../../domain/repositories/permission.repository.interface';
+import { IPermissionRepository } from '../../domain/interfaces/permission.repository.interface';
 import { CreatePermissionDto } from '../dto/permission.dto';
 import { Permission } from '../../domain/entities/permission.entity';
 @Injectable()

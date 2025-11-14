@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
-import { IEmailVerificationTokenRepository } from '../../domain/repositories/email-verification-token.repository.interface';
+import { IEmailVerificationTokenRepository } from '../../domain/interfaces/email-verification-token.repository.interface';
 
 export interface VerifyEmailInput {
   token: string;

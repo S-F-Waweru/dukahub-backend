@@ -4,7 +4,7 @@ import { Repository, LessThan } from 'typeorm';
 
 import { PasswordResetToken } from '../../domain/entities/password-reset-token.entity';
 import { PasswordResetTokenSchema } from '../persistence/schemas/password-reset-token.schema';
-import { IPasswordResetTokenRepository } from '../../domain/repositories/password-reset-token.repository.interface';
+import { IPasswordResetTokenRepository } from '../../domain/interfaces/password-reset-token.repository.interface';
 
 @Injectable()
 export class PasswordResetTokenRepository

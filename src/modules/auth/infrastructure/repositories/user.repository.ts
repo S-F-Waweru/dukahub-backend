@@ -9,7 +9,7 @@ import { AuthProvider } from '../../domain/enums/auth-provier.enums';
 import { UserStatus } from '../../domain/enums/user-status.enums';
 
 @Injectable()
-class UserRepository implements IUserRepository {
+export class UserRepository implements IUserRepository {
   constructor(
     @InjectRepository(UserSchema)
     private readonly repository: Repository<UserSchema>,

@@ -10,6 +10,7 @@ import { Email } from '../../domain/value-objects/email.vo';
 import { PasswordHasherService } from '../services/password-hasher.service';
 import { JwtService } from '../services/jwt.service';
 import { IRefreshTokenRepository } from '../../domain/interfaces/refresh-token.interface';
+import { RefreshToken } from '../../domain/entities/refresh-token.entity';
 
 @Injectable()
 export class LoginUserUsecase {
@@ -47,7 +48,7 @@ export class LoginUserUsecase {
     const accessToken = this.jwtService.generateAccessToken({
       userId: user.id,
       merchantId: user.merchantId,
-      // todo add role
+      email: user.email.value,
     });
 
     // 6. Generate new refresh token (JWT) for session extension
@@ -56,11 +57,16 @@ export class LoginUserUsecase {
       userId: user.id,
     });
     // 7. Save refresh token to database for later validation
-    await this.refreshTokenRepository.save({
-      token: refreshToken,
-      userId: user.id,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-    });
+    // ✅ NEW: Create RefreshToken entity first
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
+
+    const refreshTokenEntity = RefreshToken.create(
+      refreshToken, // The token string
+      user.id,      // User ID
+      expiresAt     // Expiration date
+    );
+
 
     // 8. Return tokens and user information (excluding sensitive data)
     return {

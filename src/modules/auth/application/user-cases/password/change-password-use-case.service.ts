@@ -16,7 +16,7 @@ export interface ChangePasswordInput {
 }
 
 @Injectable()
-export class changePasswordUseCase {
+export class ChangePasswordUseCase {
   constructor(
     @Inject(IUserRepository)
     private readonly userRepository: IUserRepository,
