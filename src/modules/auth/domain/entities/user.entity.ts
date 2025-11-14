@@ -3,6 +3,7 @@ import { Email } from '../value-objects/email.vo';
 import { Password } from '../value-objects/password.vo';
 import { AuthProvider } from '../enums/auth-provier.enums';
 import { UserStatus } from '../enums/user-status.enums';
+import { BadRequestException } from '@nestjs/common';
 
 export class User extends BaseEntity {
   private _email: Email;
@@ -41,24 +42,63 @@ export class User extends BaseEntity {
     this.validate();
   }
 
-  // Factory method - controls how Users are created
   static create(
     email: string,
-    plainPassword: string,
+    password: string,
     firstName: string,
     lastName: string,
     merchantId: string,
   ): User {
-    const emailVO = new Email(email);
-    const passwordVO = new Password(plainPassword);
+    console.log('=== DEBUG: User.create() called ===');
+    console.log('debug: email parameter:', email, 'type:', typeof email);
+    console.log('debug: password parameter:', password, 'type:', typeof password, 'length:', password?.length);
+    console.log('debug: firstName parameter:', firstName);
+    console.log('debug: lastName parameter:', lastName);
+    console.log('debug: merchantId parameter:', merchantId);
 
-    return new User({
+    // Check if password is undefined/null before creating Email VO
+    if (password === undefined || password === null) {
+      console.error('ERROR: Password is undefined or null!');
+      throw new BadRequestException('Password cannot be undefined or null');
+    }
+
+    try {
+      console.log('=== Creating Email VO ===');
+      const emailVO = new Email(email);
+      console.log('debug: emailVO created successfully:', emailVO);
+    } catch (error) {
+      console.error('ERROR creating Email VO:', error);
+      throw error;
+    }
+
+    try {
+      console.log('=== Creating Password VO ===');
+      console.log('debug: About to create Password with value:', password);
+      const passwordVO = new Password(password);
+      console.log('debug: passwordVO created successfully:', passwordVO);
+      console.log('debug: passwordVO value:', passwordVO.value);
+      console.log('debug: passwordVO value length:', passwordVO.value.length);
+    } catch (error) {
+      console.error('ERROR creating Password VO:', error);
+      console.error('Error stack:', error.stack);
+      throw error;
+    }
+
+    // Now create both for real
+    const emailVO = new Email(email);
+    const passwordVO = new Password(password);
+
+    console.log('=== Creating User entity ===');
+    const user = new User({
       email: emailVO,
       password: passwordVO,
       firstName,
       lastName,
       merchantId,
     });
+
+    console.log('=== User creation completed successfully ===');
+    return user;
   }
 
   static fromPersistence(props: {
@@ -91,16 +131,16 @@ export class User extends BaseEntity {
 
   private validate(): void {
     if (!this._firstName || this._firstName.trim().length === 0) {
-      throw new Error('First name is required');
+      throw new BadRequestException('First name is required');
     }
     if (!this._lastName || this._lastName.trim().length === 0) {
-      throw new Error('Last name is required');
+      throw new BadRequestException('Last name is required');
     }
     if (!this._merchantId) {
-      throw new Error('Merchant ID is required');
+      throw new BadRequestException('Merchant ID is required');
     }
     if (this._authProvider === AuthProvider.LOCAL && !this._password) {
-      throw new Error('Password is required for local authentication');
+      throw new BadRequestException('Password is required for local authentication');
     }
   }
 

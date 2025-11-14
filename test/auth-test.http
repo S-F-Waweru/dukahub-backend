@@ -15,7 +15,6 @@
 @password = SecurePass123!@#
 @weakPassword = 12345
 
-
 ### ============================================
 ### 1. USER REGISTRATION TESTS
 ### ============================================
@@ -33,7 +32,6 @@ Content-Type: {{contentType}}
   "merchantId": "{{merchantId}}"
 }
 
-
 ### 1.2 ❌ Register with Duplicate Email (Should Fail - 409)
 POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
@@ -45,7 +43,6 @@ Content-Type: {{contentType}}
   "lastName": "Duplicate",
   "merchantId": "{{merchantId}}"
 }
-
 
 ### 1.3 ❌ Register with Invalid Email (Should Fail - 400)
 POST {{baseUrl}}/auth/register
@@ -59,7 +56,6 @@ Content-Type: {{contentType}}
   "merchantId": "{{merchantId}}"
 }
 
-
 ### 1.4 ❌ Register with Weak Password (Should Fail - 400)
 POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
@@ -72,7 +68,6 @@ Content-Type: {{contentType}}
   "merchantId": "{{merchantId}}"
 }
 
-
 ### 1.5 ❌ Register with Missing Required Fields (Should Fail - 400)
 POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
@@ -81,7 +76,6 @@ Content-Type: {{contentType}}
   "email": "missing@dukahub.test",
   "password": "{{password}}"
 }
-
 
 ### 1.6 ❌ Register with Invalid UUID merchantId (Should Fail - 400)
 POST {{baseUrl}}/auth/register
@@ -94,7 +88,6 @@ Content-Type: {{contentType}}
   "lastName": "Merchant",
   "merchantId": "not-a-uuid"
 }
-
 
 ### 1.7 ✅ Register Second User for Multi-User Tests
 # @name registerUser2
@@ -109,7 +102,6 @@ Content-Type: {{contentType}}
   "merchantId": "{{merchantId}}"
 }
 
-
 ### 1.8 ✅ Register Admin User
 # @name registerAdmin
 POST {{baseUrl}}/auth/register
@@ -123,7 +115,6 @@ Content-Type: {{contentType}}
   "merchantId": "{{merchantId}}"
 }
 
-
 ### ============================================
 ### 2. EMAIL VERIFICATION TESTS
 ### ============================================
@@ -136,7 +127,6 @@ Content-Type: {{contentType}}
   "email": "{{user1Email}}"
 }
 
-
 ### 2.2 ❌ Resend to Non-Existent Email (Should Fail - 404)
 POST {{baseUrl}}/auth/resend-verification
 Content-Type: {{contentType}}
@@ -145,7 +135,6 @@ Content-Type: {{contentType}}
   "email": "nonexistent@dukahub.test"
 }
 
-
 ### 2.3 ❌ Resend with Invalid Email Format (Should Fail - 400)
 POST {{baseUrl}}/auth/resend-verification
 Content-Type: {{contentType}}
@@ -153,7 +142,6 @@ Content-Type: {{contentType}}
 {
   "email": "invalid-email-format"
 }
-
 
 ### 2.4 ✅ Verify Email with Token
 # NOTE: Replace token with actual token from email/database
@@ -164,7 +152,6 @@ Content-Type: {{contentType}}
   "token": "paste-verification-token-from-email-here"
 }
 
-
 ### 2.5 ❌ Verify with Invalid Token (Should Fail - 400)
 POST {{baseUrl}}/auth/verify-email
 Content-Type: {{contentType}}
@@ -172,7 +159,6 @@ Content-Type: {{contentType}}
 {
   "token": "invalid-token-12345"
 }
-
 
 ### 2.6 ❌ Verify with Empty Token (Should Fail - 400)
 POST {{baseUrl}}/auth/verify-email
@@ -182,7 +168,6 @@ Content-Type: {{contentType}}
   "token": ""
 }
 
-
 ### 2.7 ❌ Verify Already Verified Email (Should Fail - 400)
 POST {{baseUrl}}/auth/verify-email
 Content-Type: {{contentType}}
@@ -190,7 +175,6 @@ Content-Type: {{contentType}}
 {
   "token": "already-used-token"
 }
-
 
 ### ============================================
 ### 3. LOGIN TESTS
@@ -206,10 +190,8 @@ Content-Type: {{contentType}}
   "password": "{{password}}"
 }
 
-
 ### Extract access token
 @accessToken = {{loginUser1.response.body.accessToken}}
-
 
 ### 3.2 ❌ Login with Wrong Password (Should Fail - 401)
 POST {{baseUrl}}/auth/login
@@ -220,7 +202,6 @@ Content-Type: {{contentType}}
   "password": "WrongPassword123!@#"
 }
 
-
 ### 3.3 ❌ Login with Non-Existent Email (Should Fail - 401)
 POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
@@ -229,7 +210,6 @@ Content-Type: {{contentType}}
   "email": "nonexistent@dukahub.test",
   "password": "{{password}}"
 }
-
 
 ### 3.4 ❌ Login with Invalid Email Format (Should Fail - 400)
 POST {{baseUrl}}/auth/login
@@ -240,7 +220,6 @@ Content-Type: {{contentType}}
   "password": "{{password}}"
 }
 
-
 ### 3.5 ❌ Login with Missing Password (Should Fail - 400)
 POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
@@ -248,7 +227,6 @@ Content-Type: {{contentType}}
 {
   "email": "{{user1Email}}"
 }
-
 
 ### 3.6 ❌ Login with Unverified Email (Should Fail - 403)
 # Register new user first, then try login without verification
@@ -260,7 +238,6 @@ Content-Type: {{contentType}}
   "password": "{{password}}"
 }
 
-
 ### 3.7 ✅ Successful Login - User 2
 # @name loginUser2
 POST {{baseUrl}}/auth/login
@@ -271,9 +248,7 @@ Content-Type: {{contentType}}
   "password": "{{password}}"
 }
 
-
 @accessToken2 = {{loginUser2.response.body.accessToken}}
-
 
 ### ============================================
 ### 4. AUTHENTICATED USER PROFILE TESTS
@@ -283,25 +258,20 @@ Content-Type: {{contentType}}
 GET {{baseUrl}}/auth/me
 Authorization: Bearer {{accessToken}}
 
-
 ### 4.2 ❌ Get Profile Without Token (Should Fail - 401)
 GET {{baseUrl}}/auth/me
-
 
 ### 4.3 ❌ Get Profile with Invalid Token (Should Fail - 401)
 GET {{baseUrl}}/auth/me
 Authorization: Bearer invalid_token_here
 
-
 ### 4.4 ❌ Get Profile with Expired Token (Should Fail - 401)
 GET {{baseUrl}}/auth/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.expired.token
 
-
 ### 4.5 ❌ Get Profile with Malformed Token (Should Fail - 401)
 GET {{baseUrl}}/auth/me
 Authorization: Bearer malformed-token
-
 
 ### ============================================
 ### 5. REFRESH TOKEN TESTS
@@ -311,32 +281,25 @@ Authorization: Bearer malformed-token
 # NOTE: refreshToken is automatically sent via httpOnly cookie
 POST {{baseUrl}}/auth/refresh
 
-
 ### 5.2 ❌ Refresh Without Cookie (Should Fail - 401)
 # Clear cookies first, then try refresh
 POST {{baseUrl}}/auth/refresh
-
 
 ### 5.3 ❌ Refresh with Invalid Token (Should Fail - 401)
 # Manually set invalid cookie
 POST {{baseUrl}}/auth/refresh
 Cookie: refreshToken=invalid_refresh_token
 
-
 ### 5.4 ❌ Refresh with Expired Token (Should Fail - 401)
 POST {{baseUrl}}/auth/refresh
 Cookie: refreshToken=expired_refresh_token
 
-
 ### 5.5 ✅ Multiple Refresh Requests (Token Rotation)
 POST {{baseUrl}}/auth/refresh
-
 ###
 POST {{baseUrl}}/auth/refresh
-
 ###
 POST {{baseUrl}}/auth/refresh
-
 
 ### ============================================
 ### 6. LOGOUT TESTS
@@ -346,29 +309,23 @@ POST {{baseUrl}}/auth/refresh
 POST {{baseUrl}}/auth/logout
 Authorization: Bearer {{accessToken}}
 
-
 ### 6.2 ❌ Logout Without Token (Should Fail - 401)
 POST {{baseUrl}}/auth/logout
-
 
 ### 6.3 ❌ Logout with Invalid Token (Should Fail - 401)
 POST {{baseUrl}}/auth/logout
 Authorization: Bearer invalid_token
 
-
 ### 6.4 ✅ Logout User 2
 POST {{baseUrl}}/auth/logout
 Authorization: Bearer {{accessToken2}}
-
 
 ### 6.5 ❌ Access Protected Route After Logout (Should Fail - 401)
 GET {{baseUrl}}/auth/me
 Authorization: Bearer {{accessToken}}
 
-
 ### 6.6 ❌ Refresh Token After Logout (Should Fail - 401)
 POST {{baseUrl}}/auth/refresh
-
 
 ### ============================================
 ### 7. PASSWORD RESET TESTS (If Implemented)
@@ -382,7 +339,6 @@ Content-Type: {{contentType}}
   "email": "{{user1Email}}"
 }
 
-
 ### 7.2 ❌ Request Reset for Non-Existent Email (Should Fail - 404)
 POST {{baseUrl}}/auth/request-password-reset
 Content-Type: {{contentType}}
@@ -391,7 +347,6 @@ Content-Type: {{contentType}}
   "email": "nonexistent@dukahub.test"
 }
 
-
 ### 7.3 ❌ Request Reset with Invalid Email (Should Fail - 400)
 POST {{baseUrl}}/auth/request-password-reset
 Content-Type: {{contentType}}
@@ -399,7 +354,6 @@ Content-Type: {{contentType}}
 {
   "email": "invalid-email"
 }
-
 
 ### 7.4 ✅ Reset Password with Valid Token
 # NOTE: Replace token with actual token from email
@@ -411,7 +365,6 @@ Content-Type: {{contentType}}
   "newPassword": "NewSecurePass123!@#"
 }
 
-
 ### 7.5 ❌ Reset with Invalid Token (Should Fail - 400)
 POST {{baseUrl}}/auth/reset-password
 Content-Type: {{contentType}}
@@ -420,7 +373,6 @@ Content-Type: {{contentType}}
   "token": "invalid-token",
   "newPassword": "NewSecurePass123!@#"
 }
-
 
 ### 7.6 ❌ Reset with Weak Password (Should Fail - 400)
 POST {{baseUrl}}/auth/reset-password
@@ -431,7 +383,6 @@ Content-Type: {{contentType}}
   "newPassword": "12345"
 }
 
-
 ### 7.7 ✅ Login with New Password After Reset
 POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
@@ -440,7 +391,6 @@ Content-Type: {{contentType}}
   "email": "{{user1Email}}",
   "password": "NewSecurePass123!@#"
 }
-
 
 ### ============================================
 ### 8. CHANGE PASSWORD TESTS (Authenticated)
@@ -456,9 +406,7 @@ Content-Type: {{contentType}}
   "password": "{{password}}"
 }
 
-
 @changePasswordToken = {{loginForPasswordChange.response.body.accessToken}}
-
 
 ### 8.2 ✅ Change Password Successfully
 POST {{baseUrl}}/auth/change-password
@@ -470,7 +418,6 @@ Content-Type: {{contentType}}
   "newPassword": "UpdatedPass123!@#"
 }
 
-
 ### 8.3 ❌ Change Password with Wrong Current Password (Should Fail - 401)
 POST {{baseUrl}}/auth/change-password
 Authorization: Bearer {{changePasswordToken}}
@@ -480,7 +427,6 @@ Content-Type: {{contentType}}
   "currentPassword": "WrongPassword123",
   "newPassword": "UpdatedPass123!@#"
 }
-
 
 ### 8.4 ❌ Change Password with Weak New Password (Should Fail - 400)
 POST {{baseUrl}}/auth/change-password
@@ -492,7 +438,6 @@ Content-Type: {{contentType}}
   "newPassword": "12345"
 }
 
-
 ### 8.5 ❌ Change Password Without Token (Should Fail - 401)
 POST {{baseUrl}}/auth/change-password
 Content-Type: {{contentType}}
@@ -502,7 +447,6 @@ Content-Type: {{contentType}}
   "newPassword": "UpdatedPass123!@#"
 }
 
-
 ### 8.6 ✅ Login with Updated Password
 POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
@@ -511,7 +455,6 @@ Content-Type: {{contentType}}
   "email": "{{user1Email}}",
   "password": "UpdatedPass123!@#"
 }
-
 
 ### ============================================
 ### 9. CONCURRENT SESSION TESTS
@@ -527,9 +470,7 @@ Content-Type: {{contentType}}
   "password": "{{password}}"
 }
 
-
 @device1Token = {{device1Login.response.body.accessToken}}
-
 
 ### 9.2 ✅ Login from Device 2 (User 1)
 # @name device2Login
@@ -541,33 +482,26 @@ Content-Type: {{contentType}}
   "password": "{{password}}"
 }
 
-
 @device2Token = {{device2Login.response.body.accessToken}}
-
 
 ### 9.3 ✅ Both Devices Access Profile
 GET {{baseUrl}}/auth/me
 Authorization: Bearer {{device1Token}}
-
 ###
 GET {{baseUrl}}/auth/me
 Authorization: Bearer {{device2Token}}
-
 
 ### 9.4 ✅ Logout from Device 1
 POST {{baseUrl}}/auth/logout
 Authorization: Bearer {{device1Token}}
 
-
 ### 9.5 ❌ Device 1 Token Should Be Invalid After Logout
 GET {{baseUrl}}/auth/me
 Authorization: Bearer {{device1Token}}
 
-
 ### 9.6 ✅ Device 2 Should Still Work
 GET {{baseUrl}}/auth/me
 Authorization: Bearer {{device2Token}}
-
 
 ### ============================================
 ### 10. RATE LIMITING TESTS (If Implemented)
@@ -581,7 +515,6 @@ Content-Type: {{contentType}}
   "email": "{{user1Email}}",
   "password": "{{password}}"
 }
-
 ###
 POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
@@ -590,7 +523,6 @@ Content-Type: {{contentType}}
   "email": "{{user1Email}}",
   "password": "{{password}}"
 }
-
 ###
 POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
@@ -599,7 +531,6 @@ Content-Type: {{contentType}}
   "email": "{{user1Email}}",
   "password": "{{password}}"
 }
-
 ###
 POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
@@ -608,7 +539,6 @@ Content-Type: {{contentType}}
   "email": "{{user1Email}}",
   "password": "{{password}}"
 }
-
 ###
 POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
@@ -617,7 +547,6 @@ Content-Type: {{contentType}}
   "email": "{{user1Email}}",
   "password": "{{password}}"
 }
-
 
 ### 10.2 Rapid Registration Attempts
 POST {{baseUrl}}/auth/register
@@ -630,7 +559,6 @@ Content-Type: {{contentType}}
   "lastName": "User1",
   "merchantId": "{{merchantId}}"
 }
-
 ###
 POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
@@ -642,7 +570,6 @@ Content-Type: {{contentType}}
   "lastName": "User2",
   "merchantId": "{{merchantId}}"
 }
-
 ###
 POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
@@ -654,7 +581,6 @@ Content-Type: {{contentType}}
   "lastName": "User3",
   "merchantId": "{{merchantId}}"
 }
-
 
 ### ============================================
 ### 11. SECURITY EDGE CASES
@@ -669,7 +595,6 @@ Content-Type: {{contentType}}
   "password": "{{password}}"
 }
 
-
 ### 11.2 ❌ XSS Attempt in Name Fields (Should Be Sanitized)
 POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
@@ -681,7 +606,6 @@ Content-Type: {{contentType}}
   "lastName": "User",
   "merchantId": "{{merchantId}}"
 }
-
 
 ### 11.3 ❌ Very Long Password (Should Fail - 400)
 POST {{baseUrl}}/auth/register
@@ -695,7 +619,6 @@ Content-Type: {{contentType}}
   "merchantId": "{{merchantId}}"
 }
 
-
 ### 11.4 ❌ Unicode/Special Characters in Email
 POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
@@ -708,7 +631,44 @@ Content-Type: {{contentType}}
   "merchantId": "{{merchantId}}"
 }
 
-
 ### 11.5 ❌ Token Tampering (Modified JWT)
 GET {{baseUrl}}/auth/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.tamperedpayload.tampered
+
+### ============================================
+### 12. CLEANUP TESTS (Optional)
+### ============================================
+
+### 12.1 Delete Test Users (If DELETE endpoint exists)
+# DELETE {{baseUrl}}/users/{{user1Id}}
+# Authorization: Bearer {{adminToken}}
+
+### ============================================
+### TEST EXECUTION SUMMARY
+### ============================================
+
+# Total Tests: 90+
+# Categories:
+# - Registration: 8 tests
+# - Email Verification: 7 tests
+# - Login: 7 tests
+# - Profile Access: 5 tests
+# - Token Refresh: 5 tests
+# - Logout: 6 tests
+# - Password Reset: 7 tests
+# - Change Password: 6 tests
+# - Concurrent Sessions: 6 tests
+# - Rate Limiting: 2 test groups
+# - Security: 5 tests
+
+### ============================================
+### NOTES FOR TESTING
+### ============================================
+
+# 1. Run tests in order (top to bottom)
+# 2. Some tests depend on previous test results
+# 3. Replace {{merchantId}} with actual UUID from database
+# 4. For email verification, check your email or database for tokens
+# 5. Refresh token tests require cookies to be enabled
+# 6. Rate limiting tests may need delays between requests
+# 7. Clean up test data after testing

@@ -1,3 +1,6 @@
+import { InvalidClassException } from '@nestjs/core/errors/exceptions';
+import { BadRequestException } from '@nestjs/common';
+
 export class Email {
   private readonly _value: string;
 
@@ -9,7 +12,7 @@ export class Email {
   private validate(): void {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this._value)) {
-      throw new Error('Invalid email format');
+      throw new BadRequestException('Please enter a valid email address');
     }
   }
 
