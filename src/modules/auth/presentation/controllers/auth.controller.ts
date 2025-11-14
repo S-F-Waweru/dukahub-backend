@@ -8,6 +8,7 @@ import {
   Req,
   UseGuards,
   Get,
+  BadRequestException,
 } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { RegisterUserUseCase } from '../../application/user-cases/register-user.use-case';
@@ -45,7 +46,6 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: RegisterDto) {
-
     const user = await this.registerUserUseCase.execute({
       email: dto.email,
       password: dto.password,
@@ -97,7 +97,7 @@ export class AuthController {
     const refreshToken = req.cookies['refreshToken'];
 
     if (!refreshToken) {
-      throw new Error('Refresh token not found');
+      throw new BadRequestException('Refresh token not found');
     }
 
     const result = await this.refreshTokenUseCase.execute({ refreshToken });

@@ -317,7 +317,7 @@ export class Email {
   private validate(): void {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this._value)) {
-      throw new Error('Invalid email format');
+      throw new BadRequestException('Invalid email format');
     }
   }
 
@@ -346,7 +346,7 @@ export class Password {
 
   private validate(): void {
     if (this._value.length < 8) {
-      throw new Error('Password must be at least 8 characters');
+      throw new BadRequestException('Password must be at least 8 characters');
     }
     
     const hasUpperCase = /[A-Z]/.test(this._value);
@@ -355,7 +355,7 @@ export class Password {
     const hasSpecialChar = /[@$!%*?&]/.test(this._value);
 
     if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecialChar) {
-      throw new Error(
+      throw new BadRequestException(
         'Password must contain uppercase, lowercase, number, and special character'
       );
     }
@@ -473,16 +473,16 @@ export class User extends BaseEntity {
 
   private validate(): void {
     if (!this._firstName || this._firstName.trim().length === 0) {
-      throw new Error('First name is required');
+      throw new BadRequestException('First name is required');
     }
     if (!this._lastName || this._lastName.trim().length === 0) {
-      throw new Error('Last name is required');
+      throw new BadRequestException('Last name is required');
     }
     if (!this._merchantId) {
-      throw new Error('Merchant ID is required');
+      throw new BadRequestException('Merchant ID is required');
     }
     if (this._authProvider === AuthProvider.LOCAL && !this._password) {
-      throw new Error('Password is required for local authentication');
+      throw new BadRequestException('Password is required for local authentication');
     }
   }
 
@@ -614,10 +614,10 @@ export class Role extends BaseEntity {
 
   private validate(): void {
     if (!this._name || this._name.trim().length === 0) {
-      throw new Error('Role name is required');
+      throw new BadRequestException('Role name is required');
     }
     if (!this._displayName || this._displayName.trim().length === 0) {
-      throw new Error('Role display name is required');
+      throw new BadRequestException('Role display name is required');
     }
   }
 
@@ -710,17 +710,17 @@ export class Permission extends BaseEntity {
 
   private validate(): void {
     if (!this._name || this._name.trim().length === 0) {
-      throw new Error('Permission name is required');
+      throw new BadRequestException('Permission name is required');
     }
     if (!this._resource || this._resource.trim().length === 0) {
-      throw new Error('Resource is required');
+      throw new BadRequestException('Resource is required');
     }
     if (!this._action || this._action.trim().length === 0) {
-      throw new Error('Action is required');
+      throw new BadRequestException('Action is required');
     }
     // Naming convention: resource_action
     if (this._name !== `${this._resource}_${this._action}`) {
-      throw new Error('Permission name must follow format: resource_action');
+      throw new BadRequestException('Permission name must follow format: resource_action');
     }
   }
 

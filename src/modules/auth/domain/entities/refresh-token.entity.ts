@@ -1,4 +1,5 @@
 import { BaseEntity } from 'src/shared/domain/base.entity';
+import { BadRequestException } from '@nestjs/common';
 
 export class RefreshToken extends BaseEntity {
   private readonly _tokenHash: string;
@@ -27,16 +28,16 @@ export class RefreshToken extends BaseEntity {
 
   private validate(): void {
     if (!this._tokenHash) {
-      throw new Error('Token hash is required');
+      throw new BadRequestException('Token hash is required');
     }
     if (!this._userId) {
-      throw new Error('User ID is required');
+      throw new BadRequestException('User ID is required');
     }
     if (!this._expiresAt) {
-      throw new Error('Expiration date is required');
+      throw new BadRequestException('Expiration date is required');
     }
     if (this._expiresAt <= new Date()) {
-      throw new Error('Token must have a future expiration date');
+      throw new BadRequestException('Token must have a future expiration date');
     }
   }
 

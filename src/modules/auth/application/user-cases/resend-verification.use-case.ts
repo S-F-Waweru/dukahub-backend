@@ -6,8 +6,6 @@ import {
 } from '@nestjs/common';
 import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
 import { IEmailVerificationTokenRepository } from '../../domain/interfaces/email-verification-token.repository.interface';
-import { TokenGeneratorService } from '../services/token-generator.service';
-import { IEmailSenderService } from '../services/email-sender.service';
 import { Email } from '../../domain/value-objects/email.vo';
 
 export interface ResendVerificationInput {
@@ -65,16 +63,16 @@ export class ResendVerificationUseCase {
     //   _expiresAt: undefined,
     //   _isUsed: false,
     //   validate: function (): void {
-    //     throw new Error('Function not implemented.');
+    //     throw new BadRequestException('Function not implemented.');
     //   },
     //   markAsUsed: function (): void {
-    //     throw new Error('Function not implemented.');
+    //     throw new BadRequestException('Function not implemented.');
     //   },
     //   isExpired: function (): boolean {
-    //     throw new Error('Function not implemented.');
+    //     throw new BadRequestException('Function not implemented.');
     //   },
     //   isValid: function (): boolean {
-    //     throw new Error('Function not implemented.');
+    //     throw new BadRequestException('Function not implemented.');
     //   },
     //   isUsed: false,
     //   usedAt: undefined,
@@ -85,7 +83,7 @@ export class ResendVerificationUseCase {
     //   createdAt: undefined,
     //   updatedAt: undefined,
     //   touch: function (): void {
-    //     throw new Error('Function not implemented.');
+    //     throw new BadRequestException('Function not implemented.');
     //   },
     // });
 
@@ -97,7 +95,7 @@ export class ResendVerificationUseCase {
     // );
 
     // if (!emailSent) {
-    //   throw new Error('Failed to send verification email');
+    //   throw new BadRequestException('Failed to send verification email');
     // }
 
     return {

@@ -30,7 +30,7 @@ export class RegisterUserUseCase {
     try {
       console.log('debug:(register)', dto);
 
-      // Validate UUID format before proceeding
+      // Validate a UUID format before proceeding
       if (!this.isValidUUID(dto.merchantId)) {
         throw new BadRequestException('Invalid merchant ID format');
       }

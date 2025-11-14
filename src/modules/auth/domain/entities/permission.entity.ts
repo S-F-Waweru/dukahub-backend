@@ -1,4 +1,5 @@
 import { BaseEntity } from 'src/shared/domain/base.entity';
+import { BadRequestException } from '@nestjs/common';
 
 export class Permission extends BaseEntity {
   private _name: string;
@@ -38,17 +39,17 @@ export class Permission extends BaseEntity {
 
   private validate(): void {
     if (!this._name || this._name.trim().length === 0) {
-      throw new Error('Permission name is required');
+      throw new BadRequestException('Permission name is required');
     }
     if (!this._resource || this._resource.trim().length === 0) {
-      throw new Error('Resource is required');
+      throw new BadRequestException('Resource is required');
     }
     if (!this._action || this._action.trim().length === 0) {
-      throw new Error('Action is required');
+      throw new BadRequestException('Action is required');
     }
     // Naming convention: resource_action
     if (this._name !== `${this._resource}_${this._action}`) {
-      throw new Error('Permission name must follow format: resource_action');
+      throw new BadRequestException('Permission name must follow format: resource_action');
     }
   }
 

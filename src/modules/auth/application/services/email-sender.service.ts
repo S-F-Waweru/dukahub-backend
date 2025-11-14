@@ -1,7 +1,9 @@
 import { Email } from '../../domain/value-objects/email.vo';
+import { RefreshToken } from '../../domain/entities/refresh-token.entity';
 
-export interface IEmailSenderService {
-  sendEmailPasswordEmail(to: Email, token: string): Promise<void>;
+export interface IEmailService {
+  // sendEmailPasswordEmail(to: Email, token: string): Promise<void>;
+  sendEmailVerificationEmail(to: Email, token: RefreshToken): Promise<void>;
 }
 
-export const IEmailSenderService = Symbol('SendEmailPasswordEmail');
+export const IEmailService = Symbol('IEmailService');

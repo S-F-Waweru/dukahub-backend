@@ -1,5 +1,6 @@
 import { BaseEntity } from 'src/shared/domain/base.entity';
 import { Permission } from './permission.entity';
+import { BadRequestException } from '@nestjs/common';
 
 export class Role extends BaseEntity {
   private _name: string;
@@ -31,10 +32,10 @@ export class Role extends BaseEntity {
 
   private validate(): void {
     if (!this._name || this._name.trim().length === 0) {
-      throw new Error('Role name is required');
+      throw new BadRequestException('Role name is required');
     }
     if (!this._displayName || this._displayName.trim().length === 0) {
-      throw new Error('Role display name is required');
+      throw new BadRequestException('Role display name is required');
     }
   }
 

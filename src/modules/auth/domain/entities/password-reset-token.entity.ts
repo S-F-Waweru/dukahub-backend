@@ -1,4 +1,5 @@
 import { BaseEntity } from 'src/shared/domain/base.entity';
+import { BadRequestException } from '@nestjs/common';
 
 export class PasswordResetToken extends BaseEntity {
   private readonly _token: string;
@@ -58,9 +59,9 @@ export class PasswordResetToken extends BaseEntity {
   }
 
   private validate(): void {
-    if (!this._token) throw new Error('Token cannot be empty');
+    if (!this._token) throw new BadRequestException('Token cannot be empty');
     if (this._expiresAt <= new Date())
-      throw new Error('Token cannot be expired');
+      throw new BadRequestException('Token cannot be expired');
   }
 
   // ✅ Add touch() call for domain events

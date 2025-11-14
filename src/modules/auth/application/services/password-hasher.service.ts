@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 
 @Injectable()
@@ -8,7 +8,7 @@ export class PasswordHasherService {
       return await bcrypt.hash(plainPassword, 10);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      throw new Error('Password hashing failed');
+      throw new BadRequestException('Password hashing failed');
     }
   }
 
