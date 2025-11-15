@@ -1,3 +1,5 @@
+// src/modules/auth/application/use-cases/register-user.use-case.ts
+
 import {
   BadRequestException,
   ConflictException,
@@ -6,31 +8,37 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { User } from '../../domain/entities/user.entity';
+import { EmailVerificationToken } from '../../domain/entities/email-verification-token.entity';
 import { PasswordHasherService } from '../services/password-hasher.service';
 import { TokenGeneratorService } from '../services/token-generator.service';
-import { RegisterDto } from '../dto/register.dto';
-import { Email } from '../../domain/value-objects/email.vo';
+import { IEmailSenderService } from '../services/email-sender.service';
 
+import { Email } from '../../domain/value-objects/email.vo';
 import { Password } from '../../domain/value-objects/password.vo';
 import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
-import { IRefreshTokenRepository } from '../../domain/interfaces/refresh-token.interface';
+import { IEmailVerificationTokenRepository } from '../../domain/interfaces/email-verification-token.repository.interface';
+import { RegisterDto } from '../dto/register.dto';
 
 @Injectable()
 export class RegisterUserUseCase {
   constructor(
-    @Inject(IUserRepository)
+    @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
-    @Inject(IRefreshTokenRepository)
-    private readonly refreshTokenRepository: IRefreshTokenRepository,
+    @Inject('IEmailVerificationTokenRepository')
+    private readonly emailVerificationTokenRepository: IEmailVerificationTokenRepository,
+    @Inject(IEmailSenderService) // âœ… Inject email service
+    private readonly emailService: IEmailSenderService,
     private readonly passwordHasher: PasswordHasherService,
-    private readonly tokenGenerator: TokenGeneratorService,
+    private readonly tokenGenerator: TokenGeneratorService, // âœ… Inject token generator
   ) {}
 
-  async execute(dto: RegisterDto) {
+  async execute(
+    dto: RegisterDto,
+  ): Promise<{ id: string; email: string; message: string }> {
     try {
       console.log('debug:(register)', dto);
 
-      // Validate a UUID format before proceeding
+      // Validate UUID format
       if (!this.isValidUUID(dto.merchantId)) {
         throw new BadRequestException('Invalid merchant ID format');
       }
@@ -43,7 +51,7 @@ export class RegisterUserUseCase {
         throw new ConflictException('User with this email already exists');
       }
 
-      // 2. Create user entity (validates business rules!)
+      // 2. Create user entity
       const user = User.create(
         dto.email,
         dto.password,
@@ -74,9 +82,29 @@ export class RegisterUserUseCase {
       // 4. Save user
       const savedUser = await this.userRepository.save(userWithHashedPassword);
 
+      // 5. Generate email verification token âœ…
+      const verificationTokenString = this.tokenGenerator.generate(32); // 64 hex characters
+
+      const verificationToken = EmailVerificationToken.create(
+        verificationTokenString,
+        savedUser.id,
+        new Date(Date.now() + 24 * 60 * 60 * 1000),
+      );
+
+      // 6. Save verification token âœ…
+      await this.emailVerificationTokenRepository.save(verificationToken);
+
+      // 7. Send verification email âœ…
+      await this.emailService.sendVerificationEmail(
+        savedUser.email,
+        verificationTokenString, // Send plain token, NOT hash
+      );
+
       return {
         id: savedUser.id,
         email: savedUser.email.value,
+        message:
+          'Registration successful. Please check your email to verify your account.',
       };
     } catch (error: any) {
       // Handle known business exceptions
@@ -93,7 +121,6 @@ export class RegisterUserUseCase {
       }
 
       if (error?.code === '23505') {
-        // Unique constraint violation
         throw new ConflictException('User with this email already exists');
       }
 

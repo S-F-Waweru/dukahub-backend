@@ -11,6 +11,7 @@ import { PasswordHasherService } from '../services/password-hasher.service';
 import { JwtService } from '../services/jwt.service';
 import { IRefreshTokenRepository } from '../../domain/interfaces/refresh-token.interface';
 import { RefreshToken } from '../../domain/entities/refresh-token.entity';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class LoginUserUseCase {
@@ -53,17 +54,24 @@ export class LoginUserUseCase {
     });
 
     // 6. Generate new refresh token (JWT) for session extension
-
     const refreshToken = this.jwtService.generateRefreshToken({
       userId: user.id,
     });
+
+
+    // 6. Hash the refresh token for storage
+    const tokenHash = crypto
+      .createHash('sha256')
+      .update(refreshToken)
+      .digest('hex');
+
     // 7. Save refresh token to database for later validation
     // ✅ NEW: Create RefreshToken entity first
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
 
     const refreshTokenEntity = RefreshToken.create(
-      refreshToken, // The token string
+      tokenHash, // The token string
       user.id, // User ID
       expiresAt, // Expiration date
     );
