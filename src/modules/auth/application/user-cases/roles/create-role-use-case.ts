@@ -1,7 +1,7 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
-import { IRoleRepository } from '../../domain/interfaces/role.repository.interface';
-import { CreateRoleDto } from '../dto/role.dto';
-import { Role } from '../../domain/entities/role.entity';
+import { IRoleRepository } from '../../../domain/interfaces/role.repository.interface';
+import { CreateRoleDto } from '../../dto/role.dto';
+import { Role } from '../../../domain/entities/role.entity';
 
 @Injectable()
 export class CreateRoleUseCase {
@@ -29,6 +29,7 @@ export class CreateRoleUseCase {
     await this.roleRepository.save(role);
 
     return {
+      id: role.id,
       name: role.name,
       displayName: role.displayName,
       description: role.description,

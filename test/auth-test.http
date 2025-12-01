@@ -8,12 +8,18 @@
 @merchantId = 123e4567-e89b-12d3-a456-426614174000
 
 # Test Users
-@user1Email = john.doe@dukahub.test
+@user1Email = s.f.waweru@gmail.com
 @user2Email = jane.smith@dukahub.test
 @adminEmail = admin@dukahub.test
 
 @password = SecurePass123!@#
 @weakPassword = 12345
+@token = 1b970ade7eff34a5a48dc09660d5af99f486dc0bea72240cfdf7af4aefe05809
+@resetToken =a5767ad0a62fa269f58a4bd2796209e94c09fcaa7d035108e5ab49f5c24a2f31
+
+### Extract access token
+@accessToken = {{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiYjY1MWE4Ny0wYmIyLTRjMGUtODU0Ni04NGJlYzBmNmVkNTQiLCJtZXJjaGFudElkIjoiMTIzZTQ1NjctZTg5Yi0xMmQzLWE0NTYtNDI2NjE0MTc0MDAwIiwiZW1haWwiOiJzLmYud2F3ZXJ1QGdtYWlsLmNvbSIsImlhdCI6MTc2MzE5ODgwOSwiZXhwIjoxNzYzMTk5NzA5fQ.CgX2HWjjzDRdxu_CTB3V2RhW1fc5imwBsBP0YNmY4EA}}
+
 
 ### ============================================
 ### 1. USER REGISTRATION TESTS
@@ -27,9 +33,49 @@ Content-Type: {{contentType}}
 {
   "email": "{{user1Email}}",
   "password": "{{password}}",
-  "firstName": "John",
-  "lastName": "Doe",
+  "firstName": "Sam",
+  "lastName": "Waweru",
   "merchantId": "{{merchantId}}"
+}
+
+### 1.1.1  Test User token
+POST  {{baseUrl}}/auth/verify-email
+Content-Type: application/json
+
+{
+  "token": "{{token}}"
+}
+
+### 1.1.2 ✅ Successful Login - User 1
+# @name loginUser1
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}",
+  "password": "{{password}}"
+}
+
+###
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{accessToken}}
+
+### 7.1 ✅ Request Password Reset
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: {{contentType}}
+
+{
+  "email": "{{user1Email}}"
+}
+
+### 7.4 ✅ Reset Password with Valid Token
+# NOTE: Replace token with actual token from email
+POST {{baseUrl}}/auth/reset-password
+Content-Type: {{contentType}}
+
+{
+  "token": "{{resetToken}}",
+  "newPassword": "NewSecurePass123!@#"
 }
 
 ### 1.2 ❌ Register with Duplicate Email (Should Fail - 409)
@@ -180,18 +226,7 @@ Content-Type: {{contentType}}
 ### 3. LOGIN TESTS
 ### ============================================
 
-### 3.1 ✅ Successful Login - User 1
-# @name loginUser1
-POST {{baseUrl}}/auth/login
-Content-Type: {{contentType}}
 
-{
-  "email": "{{user1Email}}",
-  "password": "{{password}}"
-}
-
-### Extract access token
-@accessToken = {{loginUser1.response.body.accessToken}}
 
 ### 3.2 ❌ Login with Wrong Password (Should Fail - 401)
 POST {{baseUrl}}/auth/login
@@ -331,13 +366,6 @@ POST {{baseUrl}}/auth/refresh
 ### 7. PASSWORD RESET TESTS (If Implemented)
 ### ============================================
 
-### 7.1 ✅ Request Password Reset
-POST {{baseUrl}}/auth/request-password-reset
-Content-Type: {{contentType}}
-
-{
-  "email": "{{user1Email}}"
-}
 
 ### 7.2 ❌ Request Reset for Non-Existent Email (Should Fail - 404)
 POST {{baseUrl}}/auth/request-password-reset

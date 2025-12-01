@@ -1,5 +1,3 @@
-// src/modules/auth/application/use-cases/register-user.use-case.ts
-
 import {
   BadRequestException,
   ConflictException,
@@ -22,11 +20,11 @@ import { RegisterDto } from '../dto/register.dto';
 @Injectable()
 export class RegisterUserUseCase {
   constructor(
-    @Inject('IUserRepository')
+    @Inject(IUserRepository)
     private readonly userRepository: IUserRepository,
-    @Inject('IEmailVerificationTokenRepository')
+    @Inject(IEmailVerificationTokenRepository)
     private readonly emailVerificationTokenRepository: IEmailVerificationTokenRepository,
-    @Inject(IEmailSenderService) // âœ… Inject email service
+    @Inject(IEmailSenderService)
     private readonly emailService: IEmailSenderService,
     private readonly passwordHasher: PasswordHasherService,
     private readonly tokenGenerator: TokenGeneratorService, // âœ… Inject token generator
@@ -82,7 +80,7 @@ export class RegisterUserUseCase {
       // 4. Save user
       const savedUser = await this.userRepository.save(userWithHashedPassword);
 
-      // 5. Generate email verification token âœ…
+      // 5. Generate email verification token
       const verificationTokenString = this.tokenGenerator.generate(32); // 64 hex characters
 
       const verificationToken = EmailVerificationToken.create(
@@ -91,10 +89,10 @@ export class RegisterUserUseCase {
         new Date(Date.now() + 24 * 60 * 60 * 1000),
       );
 
-      // 6. Save verification token âœ…
+      // 6. Save verification token
       await this.emailVerificationTokenRepository.save(verificationToken);
 
-      // 7. Send verification email âœ…
+      // 7. Send verification email
       await this.emailService.sendVerificationEmail(
         savedUser.email,
         verificationTokenString, // Send plain token, NOT hash

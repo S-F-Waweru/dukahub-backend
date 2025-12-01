@@ -24,6 +24,10 @@ import { ResendVerificationDto } from '../../application/dto/resend-verification
 import { Public } from '../decorators/public.decorator';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { CurrentUser } from '../decorators/current-user.decorator';
+import { ResetPasswordDto } from '../../application/dto/reset-password.dto';
+import { RequestPasswordResetDto } from '../../application/dto/request-password-reset.dto';
+import { ResetPasswordUseCase } from '../../application/user-cases/password/reset-password.use-case';
+import { RequestPasswordResetUseCase } from '../../application/user-cases/password/request-password-reset-use-case.service';
 
 interface AuthRequest extends Request {
   cookies: {
@@ -40,6 +44,8 @@ export class AuthController {
     private readonly logoutUserUseCase: LogoutUseCase,
     private readonly verifyEmailUseCase: VerifyEmailUseCase,
     private readonly resendVerificationUseCase: ResendVerificationUseCase,
+    private readonly requestPasswordResetUseCase: RequestPasswordResetUseCase,
+    private readonly resetPasswordUseCase: ResetPasswordUseCase,
   ) {}
 
   @Public()
@@ -100,7 +106,7 @@ export class AuthController {
       throw new BadRequestException('Refresh token not found');
     }
 
-    const result = await this.refreshTokenUseCase.execute({ refreshToken });
+    const result = await this.refreshTokenUseCase.execute(refreshToken);
 
     // Set new refresh token in cookie
     res.cookie('refreshToken', result.refreshToken, {
@@ -125,6 +131,13 @@ export class AuthController {
   ) {
     const refreshToken = req.cookies['refreshToken'];
 
+    console.log(
+      'Debug: Logout user with ID:',
+      userId,
+      'and token:',
+      refreshToken,
+    );
+
     await this.logoutUserUseCase.execute({
       userId,
       refreshToken,
@@ -136,6 +149,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   getProfile(@CurrentUser() user: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return user;
   }
 
@@ -158,6 +172,31 @@ export class AuthController {
 
     return {
       message: 'Verification email sent successfully',
+    };
+  }
+
+  @Public()
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(@Body() dto: RequestPasswordResetDto) {
+    await this.requestPasswordResetUseCase.execute({ email: dto.email });
+
+    return {
+      message: 'Password reset email sent successfully',
+    };
+  }
+
+  @Public()
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    await this.resetPasswordUseCase.execute({
+      token: dto.token,
+      newPassword: dto.newPassword,
+    });
+
+    return {
+      message: 'Password reset successfully',
     };
   }
 }

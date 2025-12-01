@@ -1,11 +1,10 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/modules/auth/domain/interfaces/user.repository.interface';
-
-import { IEmailSenderService } from '../../services/email-sender.service';
-import { Email } from 'src/modules/auth/domain/value-objects/email.vo';
-import { TokenGeneratorService } from '../../services/token-generator.service';
-import { PasswordResetToken } from 'src/modules/auth/domain/entities/password-reset-token.entity';
 import { IPasswordResetTokenRepository } from '../../../domain/interfaces/password-reset-token.repository.interface';
+import { IEmailSenderService } from '../../services/email-sender.service';
+import { TokenGeneratorService } from '../../services/token-generator.service';
+import { Email } from 'src/modules/auth/domain/value-objects/email.vo';
+import { PasswordResetToken } from 'src/modules/auth/domain/entities/password-reset-token.entity';
 
 export interface RequestPasswordResetInput {
   email: string;
@@ -17,44 +16,58 @@ export class RequestPasswordResetUseCase {
     @Inject(IUserRepository)
     private readonly userRepository: IUserRepository,
     @Inject(IPasswordResetTokenRepository)
-    private readonly passwordTokenRepository: IPasswordResetTokenRepository,
-    // private readonly emailSenderService: IEmailSenderService,
+    private readonly passwordResetTokenRepository: IPasswordResetTokenRepository,
+    @Inject(IEmailSenderService)
+    private readonly emailSenderService: IEmailSenderService,
     private readonly tokenGeneratorService: TokenGeneratorService,
   ) {}
 
-  async execute(input: RequestPasswordResetInput) {
+  async execute(input: RequestPasswordResetInput): Promise<{
+    success: boolean;
+    message: string;
+  }> {
     // 1. Find user by email
-    const { email } = input;
-    const emailObj = new Email(email);
+    const emailObj = new Email(input.email);
     const user = await this.userRepository.findByEmail(emailObj);
 
     if (!user) {
-      // Optional: silently return to avoid exposing user existence
-      throw new NotFoundException('User not found');
+      // ⚠️ Security: Don't reveal if user exists
+      // Return success anyway to prevent email enumeration
+      return {
+        success: true,
+        message: 'If an account exists, a password reset link has been sent.',
+      };
     }
 
-    // 2. Generate a secure token
-    const token = this.tokenGeneratorService.generate();
+    // 2. Delete any existing reset tokens for this user
+    await this.passwordResetTokenRepository.deleteByUserId(user.id);
+
+    // 3. Generate secure token (plain text)
+    const plainToken = this.tokenGeneratorService.generate(32); // 64 hex chars
+
+    // 4. Set expiry (1 hour)
     const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 1); // 1 hour expiry
+    expiresAt.setHours(expiresAt.getHours() + 1);
 
-    // 3. Create PasswordResetToken entity using factory method
-    const resetToken = PasswordResetToken.create(token, user.id, expiresAt);
+    // 5. Create entity (stores plain token)
+    const resetToken = PasswordResetToken.create(
+      plainToken,
+      user.id,
+      expiresAt,
+    );
 
-    // 4. Save token entity in repository
-    await this.passwordTokenRepository.save(resetToken);
+    // 6. Save token
+    await this.passwordResetTokenRepository.save(resetToken);
 
-    // todo : fix this use case and its dependencies
-    // 5. Send email with token link
-    // await this.emailSenderService.sendPasswordResetEmail(
-    //   user.email.value, // Use .value for string
-    //   user.getFullName(),
-    //   token
-    // );
+    // 7. Send email with plain token
+    await this.emailSenderService.sendPasswordResetEmail(
+      user.email,
+      plainToken,
+    );
 
     return {
       success: true,
-      message: 'Password reset instructions sent to your email',
+      message: 'If an account exists, a password reset link has been sent.',
     };
   }
 }
