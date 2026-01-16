@@ -2,11 +2,29 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot({
+      // When set to true, events are delivered asynchronously
+      wildcard: false,
+      // The delimiter used to segment namespaces
+      delimiter: '.',
+      // Set this to `true` if you want to emit the newListener event
+      newListener: false,
+      // Set this to `true` if you want to emit the removeListener event
+      removeListener: false,
+      // The maximum amount of listeners that can be assigned to an event
+      maxListeners: 10,
+      // Show event memory usage (useful for debugging)
+      verboseMemoryLeak: true,
+      // Disable throwing uncaughtException if an error event is emitted and it has no listeners
+      ignoreErrors: false,
+    }),
+
     // Load environment variables
     ConfigModule.forRoot({
       isGlobal: true,

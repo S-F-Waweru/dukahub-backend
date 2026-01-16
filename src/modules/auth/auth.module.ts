@@ -53,6 +53,8 @@ import { ChangePasswordUseCase } from './application/user-cases/password/change-
 import UserRepository from './infrastructure/repositories/user.repository';
 import { GmailEmailService } from './infrastructure/email/gmail.email.service';
 import { IEmailSenderService } from './application/services/email-sender.service';
+import { SendVerificationEmailHandler } from './application/handlers/send-verification-email.handler';
+import { NestEventPublisher } from './application/services/nest-event-publisher.service';
 
 // Interfaces
 
@@ -103,6 +105,14 @@ import { IEmailSenderService } from './application/services/email-sender.service
     RequestPasswordResetUseCase,
     ResetPasswordUseCase,
 
+    //hanlders
+    SendVerificationEmailHandler,
+    //event Handlers
+    {
+      provide: IEventPublisher,
+      useClass: NestEventPublisher,
+    },
+
     // Repository Implementations
     {
       provide: IUserRepository,
@@ -140,6 +150,7 @@ import { IEmailSenderService } from './application/services/email-sender.service
     IUserRepository,
     IRoleRepository,
     IPermissionRepository,
+    IEventPublisher,
   ],
 })
 export class AuthModule {}

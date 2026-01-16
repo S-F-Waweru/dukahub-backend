@@ -25,7 +25,8 @@ export class RegisterUserUseCase {
     @Inject(IEmailVerificationTokenRepository)
     private readonly emailVerificationTokenRepository: IEmailVerificationTokenRepository,
     @Inject(IEmailSenderService)
-    private readonly emailService: IEmailSenderService,
+    // private readonly emailService: IEmailSenderService,
+    private readonly eventPublisher: IEventPubslisher,
     private readonly passwordHasher: PasswordHasherService,
     private readonly tokenGenerator: TokenGeneratorService, // âœ… Inject token generator
   ) {}
@@ -92,10 +93,34 @@ export class RegisterUserUseCase {
       // 6. Save verification token
       await this.emailVerificationTokenRepository.save(verificationToken);
 
-      // 7. Send verification email
-      await this.emailService.sendVerificationEmail(
-        savedUser.email,
-        verificationTokenString, // Send plain token, NOT hash
+      // // 7. Send verification email
+      // await this.emailService.sendVerificationEmail(
+      //   savedUser.email,
+      //   verificationTokenString, // Send plain token, NOT hash
+      // );
+      //
+      // using  the event  handlers
+      //
+      //
+
+      // NEW CODE (add after saving token):
+      // 1. Publish user registration event
+      await this.eventPublisher.publish(
+        new UserRegisteredEvent(
+          savedUser.id,
+          savedUser.email,
+          savedUser.firstName,
+          savedUser.merchantId,
+        ),
+      );
+
+      // 2. Publish email verification event
+      await this.eventPublisher.publish(
+        new EmailVerificationRequestedEvent(
+          savedUser.id,
+          savedUser.email,
+          verificationTokenString,
+        ),
       );
 
       return {
