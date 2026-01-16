@@ -57,6 +57,4 @@ export class RolesController {
     await this.assignRoleUSeCase.execute(dto);
     return { message: 'Role assigned successfully' };
   }
-
-  @
 }
