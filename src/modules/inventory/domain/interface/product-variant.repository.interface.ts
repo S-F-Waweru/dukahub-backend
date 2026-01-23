@@ -6,6 +6,8 @@ export interface IProductVariantRepository {
   save(variant: ProductVariant): Promise<ProductVariant>;
   update(variant: ProductVariant): Promise<ProductVariant>;
   findById(id: string): Promise<ProductVariant>;
+  findLowStock(merchantIs: string): Promise<ProductVariant[]>;
+  findByProductId(productId: string): Promise<ProductVariant[]>;
 }
 
 export const IProductVariantRepository = Symbol('IProductVariantRepository');
