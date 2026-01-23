@@ -18,7 +18,7 @@ export class StockOutDto {
 }
 
 @Injectable()
-export class StockOutUsecase {
+export class StockOutUseCase {
   constructor(
     @Inject(IProductVariantRepository)
     private readonly variantRepo: IProductVariantRepository,

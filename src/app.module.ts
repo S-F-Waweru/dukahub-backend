@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
+import {InventoryModule} from "./modules/inventory/inventory.module";
 
 @Module({
   imports: [
@@ -24,7 +25,6 @@ import { AuthModule } from './modules/auth/auth.module';
       // Disable throwing uncaughtException if an error event is emitted and it has no listeners
       ignoreErrors: false,
     }),
-
     // Load environment variables
     ConfigModule.forRoot({
       isGlobal: true,
@@ -47,6 +47,7 @@ import { AuthModule } from './modules/auth/auth.module';
       }),
     }),
     AuthModule,
+    InventoryModule
   ],
   controllers: [AppController],
   providers: [AppService],

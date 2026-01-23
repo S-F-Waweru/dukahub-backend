@@ -1,5 +1,4 @@
 import { BaseEntity } from 'src/shared/domain/base.entity';
-import { WherePredicateOperator } from 'typeorm/query-builder/WhereClause.js';
 import { Price } from '../value-objects/price.vo';
 import { ReorderPoint } from '../value-objects/reorder-point.vo';
 import { ProductVariant } from './product-variant.entity';
@@ -88,6 +87,7 @@ export class Product extends BaseEntity {
     });
   }
 
+
   validate() {
     if (!this._name || this._name.trim().length === 0) {
       throw new DomainException('Product name is required');
@@ -161,4 +161,36 @@ export class Product extends BaseEntity {
   get variants(): ProductVariant[] {
     return this._variants;
   }
+
+  public update(props: {
+    name?: string;
+    description?: string;
+    categoryId?: string;
+    basePrice?: number;
+    reorderPoint?: number;
+  }): void {
+    if (props.name !== undefined) {
+      this._name = props.name;
+    }
+
+    if (props.description !== undefined) {
+      this._description = props.description;
+    }
+
+    if (props.categoryId !== undefined) {
+      this._categoryId = props.categoryId;
+    }
+
+    if (props.basePrice !== undefined) {
+      this._basePrice = new Price(props.basePrice);
+    }
+
+    if (props.reorderPoint !== undefined) {
+      this._reorderPoint = new ReorderPoint(props.reorderPoint);
+    }
+
+    this.validate();
+    this.touch();
+  }
+
 }

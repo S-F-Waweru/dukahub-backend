@@ -28,7 +28,7 @@ export class CreateProductDto {
 }
 
 @Injectable()
-export class CreateProductUsecase {
+export class CreateProductUseCase {
   constructor(
     @Inject(IProductRepository)
     private readonly productRepo: IProductRepository,

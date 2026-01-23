@@ -13,7 +13,7 @@ export class StockInDto {
 }
 
 @Injectable()
-export class StockInUsecase {
+export class StockInUseCase {
   constructor(
     @Inject(IProductVariantRepository)
     private readonly variantRepo: IProductVariantRepository,
