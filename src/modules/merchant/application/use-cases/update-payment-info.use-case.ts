@@ -1,5 +1,5 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { IMerchantRepository } from '../../domain/repositories/merchant.repository.interface';
+import {IMerchantRepository} from "../../domain/interfaces/merchant.repository.interface";
 
 export interface UpdatePaymentInfoDto {
     mpesaTill?: string;

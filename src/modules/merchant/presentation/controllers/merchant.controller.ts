@@ -113,5 +113,25 @@ export class MerchantController {
     }
 
 
+    @Put('me/payment-info')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({
+        summary: 'Update payment information',
+        description: 'Update M-Pesa and Airtel Money payment details'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Payment information updated successfully',
+    })
+    async updatePaymentInfo(
+        @CurrentUser('merchantId') merchantId: string,
+        @Body() dto: UpdatePaymentInfoDto,
+    ) {
+        await this.updatePaymentInfoUseCase.execute(merchantId, dto);
+        return {
+            success: true,
+            message: 'Payment information updated successfully',
+        };
+    }
 
 }

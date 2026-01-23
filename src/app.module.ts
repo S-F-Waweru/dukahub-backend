@@ -6,6 +6,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import {InventoryModule} from "./modules/inventory/inventory.module";
+import {MerchantModule} from "./modules/merchant/merchant.module";
 
 @Module({
   imports: [
@@ -47,7 +48,8 @@ import {InventoryModule} from "./modules/inventory/inventory.module";
       }),
     }),
     AuthModule,
-    InventoryModule
+    InventoryModule,
+    MerchantModule
   ],
   controllers: [AppController],
   providers: [AppService],

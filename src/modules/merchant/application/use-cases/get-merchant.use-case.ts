@@ -1,6 +1,7 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { IMerchantRepository } from '../../domain/repositories/merchant.repository.interface';
+
 import { Merchant } from '../../domain/entities/merchant.entity';
+import {IMerchantRepository} from "../../domain/interfaces/merchant.repository.interface";
 
 @Injectable()
 export class GetMerchantUseCase {
