@@ -147,4 +147,30 @@ export class ProductVariant extends BaseEntity {
   get etimsItemCode(): string | undefined {
     return this._etimsItemCode;
   }
+
+  static fromPersistence(props: {
+    id: string;
+    productId: string;
+    sku: string;
+    attributes: Record<string, string>;
+    costPrice: number;
+    sellingPrice: number;
+    currentStock: number;
+    reorderPoint?: number;
+    supplierInfo?: Record<string, any>;
+    etimsItemCode?: string;
+  }): ProductVariant {
+    return new ProductVariant({
+      id: props.id,
+      productId: props.productId,
+      sku: new SKU(props.sku),
+      attributes: props.attributes,
+      costPrice: new Price(props.costPrice),
+      sellingPrice: new Price(props.sellingPrice),
+      stockLevel: new StockLevel(props.currentStock),
+      reorderPoint: props.reorderPoint ? new ReorderPoint(props.reorderPoint) : undefined,
+      supplierInfo: props.supplierInfo,
+      etimsItemCode: props.etimsItemCode,
+    });
+  }
 }
