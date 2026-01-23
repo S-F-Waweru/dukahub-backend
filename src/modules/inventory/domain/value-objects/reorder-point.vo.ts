@@ -1,21 +1,18 @@
-// domain/value-objects/price.vo.ts
+// domain/value-objects/reorder-point.vo.ts
 
 import { DomainException } from "src/shared/domain/exceptions/domain.exeption";
 
-export class Price {
+export class ReorderPoint {
   private readonly _value: number;
 
   constructor(value: number) {
-    this._value = Math.round(value * 100) / 100; // 2 decimal places
+    this._value = Math.floor(value);
     this.validate();
   }
 
   private validate(): void {
     if (this._value < 0) {
-      throw new DomainException('Price cannot be negative');
-    }
-    if (this._value > 10000000) {
-      throw new DomainException('Price exceeds maximum allowed');
+      throw new DomainException('Reorder point cannot be negative');
     }
   }
 

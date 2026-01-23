@@ -1,6 +1,7 @@
 // src/application/handlers/user-registration-audit.handler.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { UserRegisteredEvent } from "../../domain/events/user-registered.events";
 
 
 @Injectable()
