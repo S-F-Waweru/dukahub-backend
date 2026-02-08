@@ -5,6 +5,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
+import  {v4 as uuid} from 'uuid';
 import { User } from '../../domain/entities/user.entity';
 import { EmailVerificationToken } from '../../domain/entities/email-verification-token.entity';
 import { PasswordHasherService } from '../services/password-hasher.service';
@@ -38,9 +39,9 @@ export class RegisterUserUseCase {
   ): Promise<{ id: string; email: string; message: string }> {
     try {
       console.log('debug:(register)', dto);
-
+      const merchantId = uuid()
       // Validate UUID format
-      if (!this.isValidUUID(dto.merchantId)) {
+      if (!this.isValidUUID(merchantId)) {
         throw new BadRequestException('Invalid merchant ID format');
       }
 
@@ -52,13 +53,14 @@ export class RegisterUserUseCase {
         throw new ConflictException('User with this email already exists');
       }
 
+
       // 2. Create user entity
       const user = User.create(
         dto.email,
         dto.password,
         dto.firstName,
         dto.lastName,
-        dto.merchantId,
+        merchantId
       );
 
       // 3. Hash password
@@ -118,13 +120,13 @@ export class RegisterUserUseCase {
       // );
 
       // 2. Publish email verification event
-      await this.eventPublisher.publish(
-        new EmailVerificationRequestedEvent(
-          savedUser.id,
-          savedUser.email,
-          verificationTokenString,
-        ),
-      );
+      // await this.eventPublisher.publish(
+      //   new EmailVerificationRequestedEvent(
+      //     savedUser.id,
+      //     savedUser.email,
+      //     verificationTokenString,
+      //   ),
+      // );
 
       return {
         id: savedUser.id,

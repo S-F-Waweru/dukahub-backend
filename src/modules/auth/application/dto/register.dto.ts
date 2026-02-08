@@ -29,6 +29,6 @@ export class RegisterDto {
   @MaxLength(50)
   lastName: string;
 
-  @IsUUID()
-  merchantId: string;
+  // @IsUUID()
+  // merchantId: string;
 }

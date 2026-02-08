@@ -58,7 +58,7 @@ export class AuthController {
       // phoneNumber: dto.phoneNumber,
       firstName: dto.firstName,
       lastName: dto.lastName,
-      merchantId: dto.merchantId,
+      // merchantId: dto.merchantId,
     });
 
     return {

@@ -83,7 +83,7 @@ export class LoginUserUseCase {
       refreshToken,
       user: {
         id: user.id,
-        email: user.email,
+        email: user.email.value,
         merchantId: user.merchantId,
         // role: user.role,
       },

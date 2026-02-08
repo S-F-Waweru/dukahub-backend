@@ -34,6 +34,7 @@ async function bootstrap() {
       ],
     }),
   );
+  app.enableCors()
 
   await app.listen(process.env.PORT ?? 5570);
   console.log('Application is running on: http://localhost:5570');
