@@ -5,6 +5,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
+import  {v4 as uuid} from 'uuid';
 import { User } from '../../domain/entities/user.entity';
 import { EmailVerificationToken } from '../../domain/entities/email-verification-token.entity';
 import { PasswordHasherService } from '../services/password-hasher.service';
@@ -16,16 +17,19 @@ import { Password } from '../../domain/value-objects/password.vo';
 import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
 import { IEmailVerificationTokenRepository } from '../../domain/interfaces/email-verification-token.repository.interface';
 import { RegisterDto } from '../dto/register.dto';
+import { EmailVerificationRequestedEvent } from '../../domain/events/email-verification-requested.event';
+import * as eventPublisherInterface from "../../domain/interfaces/event-publisher.interface";
 
 @Injectable()
 export class RegisterUserUseCase {
   constructor(
-    @Inject(IUserRepository)
-    private readonly userRepository: IUserRepository,
-    @Inject(IEmailVerificationTokenRepository)
-    private readonly emailVerificationTokenRepository: IEmailVerificationTokenRepository,
-    @Inject(IEmailSenderService)
-    private readonly emailService: IEmailSenderService,
+      @Inject(IUserRepository)
+      private readonly userRepository: IUserRepository,
+      @Inject(IEmailVerificationTokenRepository)
+      private readonly emailVerificationTokenRepository: IEmailVerificationTokenRepository,
+      @Inject(IEmailSenderService)
+      // private readonly emailService: IEmailSenderService,
+      private readonly eventPublisher: eventPublisherInterface.IEventPublisher,
     private readonly passwordHasher: PasswordHasherService,
     private readonly tokenGenerator: TokenGeneratorService, // âœ… Inject token generator
   ) {}
@@ -35,9 +39,9 @@ export class RegisterUserUseCase {
   ): Promise<{ id: string; email: string; message: string }> {
     try {
       console.log('debug:(register)', dto);
-
+      const merchantId = uuid()
       // Validate UUID format
-      if (!this.isValidUUID(dto.merchantId)) {
+      if (!this.isValidUUID(merchantId)) {
         throw new BadRequestException('Invalid merchant ID format');
       }
 
@@ -49,13 +53,14 @@ export class RegisterUserUseCase {
         throw new ConflictException('User with this email already exists');
       }
 
+
       // 2. Create user entity
       const user = User.create(
         dto.email,
         dto.password,
         dto.firstName,
         dto.lastName,
-        dto.merchantId,
+        merchantId
       );
 
       // 3. Hash password
@@ -92,11 +97,36 @@ export class RegisterUserUseCase {
       // 6. Save verification token
       await this.emailVerificationTokenRepository.save(verificationToken);
 
-      // 7. Send verification email
-      await this.emailService.sendVerificationEmail(
-        savedUser.email,
-        verificationTokenString, // Send plain token, NOT hash
-      );
+      // // 7. Send verification email
+      // await this.emailService.sendVerificationEmail(
+      //   savedUser.email,
+      //   verificationTokenString, // Send plain token, NOT hash
+      // );
+      //
+      // using  the event  handlers
+      //
+
+
+      // todo add => UserRegisteredEvent
+      // NEW CODE (add after saving token):
+      // 1. Publish user registration event
+      // await this.eventPublisher.publish(
+      //   new UserRegisteredEvent(
+      //     savedUser.id,
+      //     savedUser.email,
+      //     savedUser.firstName,
+      //     savedUser.merchantId,
+      //   ),
+      // );
+
+      // 2. Publish email verification event
+      // await this.eventPublisher.publish(
+      //   new EmailVerificationRequestedEvent(
+      //     savedUser.id,
+      //     savedUser.email,
+      //     verificationTokenString,
+      //   ),
+      // );
 
       return {
         id: savedUser.id,

@@ -58,7 +58,7 @@ export class AuthController {
       // phoneNumber: dto.phoneNumber,
       firstName: dto.firstName,
       lastName: dto.lastName,
-      merchantId: dto.merchantId,
+      // merchantId: dto.merchantId,
     });
 
     return {
@@ -89,6 +89,7 @@ export class AuthController {
 
     return {
       accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
       user: result.user,
     };
   }

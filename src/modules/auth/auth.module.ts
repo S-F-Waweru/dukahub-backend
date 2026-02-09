@@ -44,6 +44,7 @@ import { IEmailVerificationTokenRepository } from './domain/interfaces/email-ver
 import { IPasswordResetTokenRepository } from './domain/interfaces/password-reset-token.repository.interface';
 import { IRoleRepository } from './domain/interfaces/role.repository.interface';
 import { IPermissionRepository } from './domain/interfaces/permission.repository.interface';
+import {IEventPublisher} from './domain/interfaces/event-publisher.interface'
 import { IUserRepository } from './domain/interfaces/user.repository.interface';
 import { UserRoleSchema } from './infrastructure/persistence/schemas/user-role.schema';
 import { LoginUserUseCase } from './application/user-cases/login-user-use-case.service';
@@ -53,6 +54,8 @@ import { ChangePasswordUseCase } from './application/user-cases/password/change-
 import UserRepository from './infrastructure/repositories/user.repository';
 import { GmailEmailService } from './infrastructure/email/gmail.email.service';
 import { IEmailSenderService } from './application/services/email-sender.service';
+import { NestEventPublisher } from './application/services/nest-event-publisher.service';
+import { SendVerificationEmailHanlder } from './application/handlers/send-verification-email.handler';
 
 // Interfaces
 
@@ -102,6 +105,14 @@ import { IEmailSenderService } from './application/services/email-sender.service
     ChangePasswordUseCase,
     RequestPasswordResetUseCase,
     ResetPasswordUseCase,
+
+    //hanlders
+    SendVerificationEmailHanlder,
+    //event Handlers
+    {
+      provide: IEventPublisher,
+      useClass: NestEventPublisher,
+    },
 
     // Repository Implementations
     {
