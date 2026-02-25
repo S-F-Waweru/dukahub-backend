@@ -28,6 +28,7 @@ import { ResetPasswordDto } from '../../application/dto/reset-password.dto';
 import { RequestPasswordResetDto } from '../../application/dto/request-password-reset.dto';
 import { ResetPasswordUseCase } from '../../application/user-cases/password/reset-password.use-case';
 import { RequestPasswordResetUseCase } from '../../application/user-cases/password/request-password-reset-use-case.service';
+import { Throttle } from '@nestjs/throttler';
 
 interface AuthRequest extends Request {
   cookies: {
@@ -51,6 +52,7 @@ export class AuthController {
   @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @Throttle({ default: { limit: 3, ttl: 3600000 } })
   async register(@Body() dto: RegisterDto) {
     const user = await this.registerUserUseCase.execute({
       email: dto.email,
@@ -69,6 +71,7 @@ export class AuthController {
 
   @Public()
   @Post('login')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   async login(
     @Body() dto: LoginDto,
@@ -96,6 +99,7 @@ export class AuthController {
 
   @Public()
   @Post('refresh')
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   async refresh(
     @Req() req: AuthRequest,
