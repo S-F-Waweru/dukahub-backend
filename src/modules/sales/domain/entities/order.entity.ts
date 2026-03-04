@@ -236,4 +236,67 @@ export class Order extends BaseEntity {
   get deliveredAt(): Date | undefined {
     return this._deliveredAt;
   }
+
+  static fromPersistence(param: {
+    id: string;
+    orderNumber: string;
+    merchantId: string;
+    customerId: string | undefined;
+    items: OrderItem[];
+    subtotal: number;
+    deliveryFee: number;
+    total: number;
+    status: OrderStatus;
+    channel: OrderChannel;
+    fulfillmentInfo: any;
+    paymentId: string | undefined;
+    notes: string | undefined;
+    paidAt: Date | undefined;
+    shippedAt: Date | undefined;
+    deliveredAt: Date | undefined;
+    cancelledAt: Date | undefined;
+    cancellationReason: string | undefined;
+  }) {
+    return new Order({
+      orderNumber: new OrderNumber(param.orderNumber),
+      merchantId: param.merchantId,
+      customerId: param.customerId,
+      items: param.items,
+      // subtotal: param.subtotal,
+      // deliveryFee: param.deliveryFee,
+      // total: param.total,
+      status: param.status,
+      channel: param.channel,
+      fulfillmentInfo: param.fulfillmentInfo,
+      // paymentId: param.paymentId,
+      notes: param.notes,
+      // paidAt: param.paidAt,
+      // shippedAt: param.shippedAt,
+      // deliveredAt: param.deliveredAt,
+      // cancelledAt: param.cancelledAt,
+      // cancellationReason: param.cancellationReason,
+    });
+  }
+
+  static create(props: {
+    orderNumber: OrderNumber;
+    merchantId: string;
+    customerId?: string;
+    items: OrderItem[];
+    channel: OrderChannel;
+    fulfillmentInfo?: FulfillmentInfo;
+    notes?: string;
+    status?: OrderStatus;
+  }) {
+    return new Order({
+      orderNumber: props.orderNumber,
+      merchantId: props.merchantId,
+      customerId: props.customerId,
+      items: props.items,
+      channel: props.channel,
+      fulfillmentInfo: props.fulfillmentInfo,
+      notes: props.notes,
+      status: props.status,
+    })
+  }
 }

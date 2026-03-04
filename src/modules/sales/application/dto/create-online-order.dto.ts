@@ -7,6 +7,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { OrderItemDto } from './order-item.dto';
 
 class FulfillmentInfoDto {
   @ApiProperty({ example: '+254712345678' })
@@ -62,3 +63,5 @@ export class CreateOnlineOrderDto {
   @IsString()
   notes?: string;
 }
+
+

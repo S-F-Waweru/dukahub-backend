@@ -37,8 +37,8 @@ export class CompleteOrderUseCase {
       new OrderCompletedEvent(
         order.id,
         order.merchantId,
-        order.customerId,
         order.total.value,
+        order.customerId,
       ),
     );
   }

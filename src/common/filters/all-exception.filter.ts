@@ -38,7 +38,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message = 'Database query failed';
 
       // Handle specific database errors
-      const error = exception;
+      const error = exception as any;
       if (error.code === '23505') {
         message = 'Duplicate entry. Record already exists.';
       } else if (error.code === '23503') {
