@@ -1,5 +1,5 @@
 import { Process, Processor } from '@nestjs/bull';
-import { Job } from 'bull';
+import type { Job } from 'bull';
 import { ReconcilePaymentUseCase } from '../../application/use-cases/reconcile-payment.use-case';
 
 @Processor('payment-reconcile')

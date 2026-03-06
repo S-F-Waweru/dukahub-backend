@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TransactionSchema } from './infrastructure/persistence/typeorm/transaction.schema';
 
 // MVP Adapters
-import { MpesaStkAdapter } from './infrastructure/adapters/mpesa-stk.adapter';
+
 // Phase 2: import { AirtelMoneyAdapter } from './infrastructure/adapters/airtel-money.adapter';
 // Phase 2: import { MpesaGlobalAdapter } from './infrastructure/adapters/mpesa-global.adapter';
 // Phase 3: import { CardFlutterwaveAdapter } from './infrastructure/adapters/card-flutterwave.adapter';
@@ -19,6 +19,8 @@ import { GetTransactionUseCase } from './application/use-cases/get-transaction.u
 import { ReconcilePaymentUseCase } from './application/use-cases/reconcile-payment.use-case';
 import { PaymentController } from './presentation/controllers/payment.controller';
 import { ITransactionRepository } from './domain/repositories/transcation.repository.interface';
+import { MpesaStkAdapter } from './infrastructure/adapters/mpesa-stk.adapter';
+import { TransactionRepository } from './infrastructure/repositories/transaction.repository';
 
 const useCases = [
   InitiatePaymentUseCase,
@@ -30,7 +32,6 @@ const useCases = [
   ReconcilePaymentUseCase,
 ];
 
-let TransactionRepository;
 
 @Module({
   imports: [TypeOrmModule.forFeature([TransactionSchema])],
@@ -45,7 +46,7 @@ let TransactionRepository;
 
     {
       provide: ITransactionRepository,
-      useClass: TransactionRepository,
+      useClass:TransactionRepository ,
     },
   ],
   exports: [InitiatePaymentUseCase, ProcessCashUseCase],

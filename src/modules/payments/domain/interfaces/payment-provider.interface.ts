@@ -18,6 +18,7 @@ export interface PaymentInitiateResponse {
 
 export interface PaymentCallbackResult {
   success: boolean;
+  stillProcessing?: boolean;
   providerReceiptNumber?: string; // e.g. QJK2XXXXXX from M-Pesa
   failureReason?: string;
   rawPayload: Record<string, unknown>;

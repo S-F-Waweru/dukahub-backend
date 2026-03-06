@@ -7,7 +7,7 @@ export const ITransactionRepository = Symbol('ITransactionRepository');
 
 export interface TransactionFilters {
   status?: TransactionStatus;
-  from?: Date;
+  from?: Date | string;
   to?: Date;
   page?: number;
   limit?: number;
