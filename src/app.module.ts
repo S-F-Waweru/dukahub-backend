@@ -13,6 +13,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/all-exception.filter';
 import { PaymentModule } from './modules/payments/payement.module';
+import { HealthModule } from './health/health.module';
 // import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 @Module({
   imports: [
@@ -47,7 +48,7 @@ import { PaymentModule } from './modules/payments/payement.module';
     InventoryModule,
     MerchantModule,
     PaymentModule,
-    // HealthModule,  ← uncomment in next commit
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [
