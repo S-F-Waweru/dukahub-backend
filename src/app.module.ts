@@ -12,6 +12,7 @@ import { MerchantModule } from './modules/merchant/merchant.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/all-exception.filter';
+import { PaymentModule } from './modules/payments/payement.module';
 // import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 @Module({
   imports: [
@@ -45,7 +46,7 @@ import { AllExceptionsFilter } from './common/filters/all-exception.filter';
     AuthModule,
     InventoryModule,
     MerchantModule,
-    // PaymentModule, ← add when ready
+    PaymentModule,
     // HealthModule,  ← uncomment in next commit
   ],
   controllers: [AppController],

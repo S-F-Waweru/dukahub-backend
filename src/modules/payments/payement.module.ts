@@ -21,6 +21,7 @@ import { PaymentController } from './presentation/controllers/payment.controller
 import { ITransactionRepository } from './domain/repositories/transcation.repository.interface';
 import { MpesaStkAdapter } from './infrastructure/adapters/mpesa-stk.adapter';
 import { TransactionRepository } from './infrastructure/repositories/transaction.repository';
+import { HttpModule } from '@nestjs/axios';
 
 const useCases = [
   InitiatePaymentUseCase,
@@ -32,9 +33,8 @@ const useCases = [
   ReconcilePaymentUseCase,
 ];
 
-
 @Module({
-  imports: [TypeOrmModule.forFeature([TransactionSchema])],
+  imports: [HttpModule, TypeOrmModule.forFeature([TransactionSchema])],
   controllers: [PaymentController],
   providers: [
     PaymentProviderRegistry,
@@ -46,7 +46,7 @@ const useCases = [
 
     {
       provide: ITransactionRepository,
-      useClass:TransactionRepository ,
+      useClass: TransactionRepository,
     },
   ],
   exports: [InitiatePaymentUseCase, ProcessCashUseCase],

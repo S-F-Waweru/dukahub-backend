@@ -1,6 +1,5 @@
-// src/modules/payment/presentation/dto/mpesa-callback.dto.ts
+// src/modules/payments/presentation/dto/mpesa-callback.dto.ts
 import { IsObject } from 'class-validator';
-import { Type } from 'class-transformer';
 
 /**
  * Daraja sends a deeply nested payload we cannot fully validate
@@ -13,16 +12,17 @@ import { Type } from 'class-transformer';
  *  - Parse and validate the contents inside MpesaStkAdapter.parseCallback()
  *    where we control the logic and can handle missing fields gracefully
  */
-export class MpesaCallbackDto {
-  @IsObject()
-  Body: MpesaCallbackBody;
-}
 
 // ─── Nested shape classes (for documentation + partial type safety) ─────────
 // These are NOT strictly validated — they document what Daraja sends.
 
-class MpesaCallbackBody {
-  stkCallback: StkCallback;
+class CallbackMetadataItem {
+  Name: string; // "Amount" | "MpesaReceiptNumber" | "Balance" | "TransactionDate" | "PhoneNumber"
+  Value?: string | number; // Balance item comes with no Value — always use optional
+}
+
+class CallbackMetadata {
+  Item: CallbackMetadataItem[];
 }
 
 class StkCallback {
@@ -33,11 +33,13 @@ class StkCallback {
   CallbackMetadata?: CallbackMetadata; // ONLY present on success (ResultCode 0)
 }
 
-class CallbackMetadata {
-  Item: CallbackMetadataItem[];
+class MpesaCallbackBody {
+  stkCallback: StkCallback;
 }
 
-class CallbackMetadataItem {
-  Name: string; // "Amount" | "MpesaReceiptNumber" | "Balance" | "TransactionDate" | "PhoneNumber"
-  Value?: string | number; // Balance item comes with no Value — always use optional
+// ─── Main DTO ─────────────────────────────────────────────────────────────────
+
+export class MpesaCallbackDto {
+  @IsObject()
+  Body: MpesaCallbackBody;
 }
