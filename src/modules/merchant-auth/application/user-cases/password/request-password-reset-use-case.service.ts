@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IUserRepository } from 'src/modules/auth/domain/interfaces/user.repository.interface';
+import { IUserRepository } from 'src/modules/merchant-auth/domain/interfaces/user.repository.interface';
 import { IPasswordResetTokenRepository } from '../../../domain/interfaces/password-reset-token.repository.interface';
 import { IEmailSenderService } from '../../services/email-sender.service';
 import { TokenGeneratorService } from '../../services/token-generator.service';
-import { Email } from 'src/modules/auth/domain/value-objects/email.vo';
-import { PasswordResetToken } from 'src/modules/auth/domain/entities/password-reset-token.entity';
+import { Email } from 'src/modules/merchant-auth/domain/value-objects/email.vo';
+import { PasswordResetToken } from 'src/modules/merchant-auth/domain/entities/password-reset-token.entity';
 
 export interface RequestPasswordResetInput {
   email: string;

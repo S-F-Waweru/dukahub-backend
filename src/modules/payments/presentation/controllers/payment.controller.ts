@@ -10,10 +10,10 @@ import {
   UseGuards,
   Logger,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
-import { RolesGuard } from '../../../auth/presentation/guards/roles.guard';
-import { Roles } from '../../../auth/presentation/decorators/roles.decorator';
-import { CurrentUser } from '../../../auth/presentation/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../../../merchant-auth/presentation/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../merchant-auth/presentation/guards/roles.guard';
+import { Roles } from '../../../merchant-auth/presentation/decorators/roles.decorator';
+import { CurrentUser } from '../../../merchant-auth/presentation/decorators/current-user.decorator';
 import type {
   InitiatePaymentDto,
 } from '../../application/use-cases/initiate-payment.use-case';

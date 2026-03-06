@@ -6,7 +6,7 @@ import {IProductRepository} from "../../domain/interface/product-repository.inte
 export class ListProductUseCase {
     constructor(
         @Inject(IProductRepository)
-        private readonly productRepository: IProductRepository,
+    private readonly productRepository: IProductRepository,
         @Inject(IProductVariantRepository)
         private readonly productVariantRepository: IProductVariantRepository
     ) {

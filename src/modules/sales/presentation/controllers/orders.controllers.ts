@@ -24,12 +24,12 @@ import { CreateOnlineOrderUseCase } from '../../application/use-cases/create-onl
 import { GetOrderUseCase } from '../../application/use-cases/get-order.use-case';
 import { ListOrdersUseCase } from '../../application/use-cases/list-orders.use-case';
 import { CancelOrderUseCase } from '../../application/use-cases/cancel-order.use-case';
-import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../merchant-auth/presentation/guards/jwt-auth.guard';
 import { MarkOrderAsPaidUseCase } from '../../application/use-cases/mark-order-as-paid.usecase';
 import { MarkOrderAsShippedUseCase } from '../../application/use-cases/mark-order-as-shipped.usecase';
 import { MarkOrderAsDeliveredUseCase } from '../../application/use-cases/mark-as-delivered.use-case';
 import { CompleteOrderUseCase } from '../../application/use-cases/complete-order-use-case';
-import { CurrentUser } from '../../../auth/presentation/decorators/current-user.decorator';
+import { CurrentUser } from '../../../merchant-auth/presentation/decorators/current-user.decorator';
 import {
   CancelOrderDto,
   CreateOnlineOrderDto,

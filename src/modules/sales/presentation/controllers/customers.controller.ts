@@ -20,8 +20,8 @@ import { CreateCustomerUseCase } from '../../application/use-cases/create-custom
 import { GetCustomerUseCase } from '../../application/use-cases/get-customer.use-case';
 import { GetCustomerOrdersUseCase } from '../../application/use-cases/get-customer-orders.use-case';
 import { CreateCustomerDto } from '../dtos/customers.dto';
-import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
-import { CurrentUser } from '../../../auth/presentation/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../../../merchant-auth/presentation/guards/jwt-auth.guard';
+import { CurrentUser } from '../../../merchant-auth/presentation/decorators/current-user.decorator';
 
 @ApiTags('Customers')
 @ApiBearerAuth()

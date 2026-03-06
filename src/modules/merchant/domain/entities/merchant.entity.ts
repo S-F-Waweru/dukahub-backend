@@ -72,8 +72,10 @@ export class Merchant extends BaseEntity {
     type: MerchantType,
     phoneNumber: string,
     email: string,
+    id?: string,
   ): Merchant {
     return new Merchant({
+      id: id ? id : undefined,
       businessName: new BusinessName(businessName),
       type,
       phoneNumber,

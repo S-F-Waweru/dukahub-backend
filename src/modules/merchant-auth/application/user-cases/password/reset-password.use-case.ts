@@ -5,10 +5,10 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { IUserRepository } from 'src/modules/auth/domain/interfaces/user.repository.interface';
+import { IUserRepository } from 'src/modules/merchant-auth/domain/interfaces/user.repository.interface';
 import { IPasswordResetTokenRepository } from '../../../domain/interfaces/password-reset-token.repository.interface';
 import { PasswordHasherService } from '../../services/password-hasher.service';
-import { Password } from 'src/modules/auth/domain/value-objects/password.vo';
+import { Password } from 'src/modules/merchant-auth/domain/value-objects/password.vo';
 
 export interface ResetPasswordInput {
   token: string;

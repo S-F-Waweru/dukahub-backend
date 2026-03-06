@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './modules/auth/auth.module';
+import { AuthModule } from './modules/merchant-auth/auth.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { MerchantModule } from './modules/merchant/merchant.module';
 // import { HealthModule } from './health/health.module';
@@ -14,6 +14,8 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/all-exception.filter';
 import { PaymentModule } from './modules/payments/payement.module';
 import { HealthModule } from './health/health.module';
+import { SalesModule } from './modules/sales/sales.module';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 // import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 @Module({
   imports: [
@@ -48,6 +50,7 @@ import { HealthModule } from './health/health.module';
     InventoryModule,
     MerchantModule,
     PaymentModule,
+    SalesModule,
     HealthModule,
   ],
   controllers: [AppController],
@@ -55,7 +58,7 @@ import { HealthModule } from './health/health.module';
     AppService,
     { provide: APP_GUARD, useClass: ThrottlerGuard }, // ← fixed: useValue → useClass
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
-    // { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
+    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
   ],
 })
 export class AppModule {}

@@ -43,8 +43,8 @@ interface AuthRequest extends Request {
   };
 }
 
-@ApiTags('Auth')
-@Controller('auth')
+@ApiTags('Merchant Auth')
+@Controller('merchant-auth')
 export class AuthController {
   constructor(
     private readonly registerUserUseCase: RegisterUserUseCase,

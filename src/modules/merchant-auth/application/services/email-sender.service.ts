@@ -1,4 +1,4 @@
-// src/modules/auth/application/services/email-sender.service.ts
+// src/modules/merchant-auth/application/services/email-sender.service.ts
 
 import { Email } from '../../domain/value-objects/email.vo';
 

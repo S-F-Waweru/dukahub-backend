@@ -1,4 +1,4 @@
-// src/modules/auth/infrastructure/adapters/gmail-email.service.ts
+// src/modules/merchant-auth/infrastructure/adapters/gmail-email.service.ts
 
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
