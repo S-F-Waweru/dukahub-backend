@@ -19,6 +19,7 @@ import { IEmailVerificationTokenRepository } from '../../domain/interfaces/email
 import { RegisterDto } from '../dto/register.dto';
 import { EmailVerificationRequestedEvent } from '../../domain/events/email-verification-requested.event';
 import * as eventPublisherInterface from "../../domain/interfaces/event-publisher.interface";
+import { UserRegisteredEvent } from '../../domain/events/user-registered.events';
 
 @Injectable()
 export class RegisterUserUseCase {
@@ -27,8 +28,9 @@ export class RegisterUserUseCase {
       private readonly userRepository: IUserRepository,
       @Inject(IEmailVerificationTokenRepository)
       private readonly emailVerificationTokenRepository: IEmailVerificationTokenRepository,
-      @Inject(IEmailSenderService)
+      // @Inject(IEmailSenderService)
       // private readonly emailService: IEmailSenderService,
+      @Inject(eventPublisherInterface.IEventPublisher)
       private readonly eventPublisher: eventPublisherInterface.IEventPublisher,
     private readonly passwordHasher: PasswordHasherService,
     private readonly tokenGenerator: TokenGeneratorService, // âœ… Inject token generator
@@ -110,23 +112,23 @@ export class RegisterUserUseCase {
       // todo add => UserRegisteredEvent
       // NEW CODE (add after saving token):
       // 1. Publish user registration event
-      // await this.eventPublisher.publish(
-      //   new UserRegisteredEvent(
-      //     savedUser.id,
-      //     savedUser.email,
-      //     savedUser.firstName,
-      //     savedUser.merchantId,
-      //   ),
-      // );
+      await this.eventPublisher.publish(
+        new UserRegisteredEvent(
+          savedUser.id,
+          savedUser.email,
+          savedUser.firstName,
+          savedUser.merchantId,
+        ),
+      );
 
       // 2. Publish email verification event
-      // await this.eventPublisher.publish(
-      //   new EmailVerificationRequestedEvent(
-      //     savedUser.id,
-      //     savedUser.email,
-      //     verificationTokenString,
-      //   ),
-      // );
+      await this.eventPublisher.publish(
+        new EmailVerificationRequestedEvent(
+          savedUser.id,
+          savedUser.email,
+          verificationTokenString,
+        ),
+      );
 
       return {
         id: savedUser.id,
