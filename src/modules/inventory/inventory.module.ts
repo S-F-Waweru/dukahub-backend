@@ -21,6 +21,13 @@ import { ProductVariantRepository } from './infarastructure/perisistence/reposot
 import { IStockMovementRepository } from './domain/interface/stock-movement.repsotory.interface';
 import { StockMovementRepository } from './infarastructure/perisistence/reposotories/stock-movement.repository';
 import InventoryController from './presentation/controllers/inventory-controller';
+import {ListCategoriesUseCase} from "./application/use-cases/list-categgory.usecase";
+import {CreateCategoryUseCase} from "./application/use-cases/create-category.usecase";
+import {GetCategoryUseCase} from "./application/use-cases/get-category.usecase";
+import {CategoryRepository} from "./infarastructure/perisistence/reposotories/category.repository";
+import {ICategoryRepository} from "./domain/interface/category-repository.interface";
+import {CategorySchema} from "./infarastructure/perisistence/schema/category.schema";
+import {CategoryController} from "./presentation/controllers/category.controller";
 
 const useCases = [
   CreateProductUseCase,
@@ -33,6 +40,9 @@ const useCases = [
   AdjustStockUseCase,
   GetStockMovementsUseCase,
   GetLowStockProductUseCase,
+  CreateCategoryUseCase,
+  ListCategoriesUseCase,
+  GetCategoryUseCase,
 ];
 
 const repositories = [
@@ -48,10 +58,10 @@ const repositories = [
     provide: IStockMovementRepository,
     useClass: StockMovementRepository,
   },
-  // {
-  //     provide: ICategoryRepository,
-  //     useClass: CategoryRepository,
-  // },
+  {
+      provide: ICategoryRepository,
+      useClass: CategoryRepository,
+  },
 ];
 
 // const eventHandlers = [StockOutMonitorListener];
@@ -62,11 +72,11 @@ const repositories = [
       ProductSchema,
       ProductVariantSchema,
       StockMovementSchema,
-      // CategorySchema,
+      CategorySchema,
     ]),
     // CqrsModule, // For event bus
   ],
-  controllers: [InventoryController, StockController],
+  controllers: [InventoryController, StockController, CategoryController],
   providers: [
     ...useCases,
     ...repositories,

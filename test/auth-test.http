@@ -11,7 +11,7 @@
 
 ### Login
 # @name login
-POST {{baseUrl}}/mrchant-auth/login
+POST {{baseUrl}}/merchant-auth/login
 Content-Type: {{contentType}}
 
 {
@@ -20,18 +20,18 @@ Content-Type: {{contentType}}
 }
 
 ### Get Profile
-GET {{baseUrl}}/mrchant-auth/me
+GET {{baseUrl}}/merchant-auth/me
 Authorization: Bearer {{accessToken}}
 
 ### Refresh Token
-POST {{baseUrl}}/mrchant-auth/refresh
+POST {{baseUrl}}/merchant-auth/refresh
 
 ### Logout
-POST {{baseUrl}}/mrchant-auth/logout
+POST {{baseUrl}}/merchant-auth/logout
 Authorization: Bearer {{accessToken}}
 
 ### Verify Email
-POST {{baseUrl}}/mrchant-auth/verify-email
+POST {{baseUrl}}/merchant-auth/verify-email
 Content-Type: {{contentType}}
 
 {
@@ -39,7 +39,7 @@ Content-Type: {{contentType}}
 }
 
 ### Resend Verification
-POST {{baseUrl}}/mrchant-auth/resend-verification
+POST {{baseUrl}}/merchant-auth/resend-verification
 Content-Type: {{contentType}}
 
 {
@@ -47,7 +47,7 @@ Content-Type: {{contentType}}
 }
 
 ### Forgot Password
-POST {{baseUrl}}/mrchant-auth/forgot-password
+POST {{baseUrl}}/merchant-auth/forgot-password
 Content-Type: {{contentType}}
 
 {
@@ -55,7 +55,7 @@ Content-Type: {{contentType}}
 }
 
 ### Reset Password
-POST {{baseUrl}}/mrchant-auth/reset-password
+POST {{baseUrl}}/merchant-auth/reset-password
 Content-Type: {{contentType}}
 
 {
