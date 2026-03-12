@@ -77,6 +77,13 @@ class EnvironmentVariables {
   SENTRY_DSN?: string;
 }
 
+/**
+ * Validate and convert a plain configuration object into an EnvironmentVariables instance.
+ *
+ * @param config - Plain object of environment values (for example, `process.env`)
+ * @returns The validated EnvironmentVariables instance
+ * @throws Error if validation fails; the error message contains the concatenated validation constraint messages
+ */
 export function validate(config: Record<string, unknown>) {
   const validatetedConfig = plainToInstance(EnvironmentVariables, config, {
     enableImplicitConversion: true,
