@@ -19,7 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { StockInUseCase } from '../../application/use-cases/stock-in.usecae';
 import { StockOutUseCase } from '../../application/use-cases/stock-out.usecase';
-import { CurrentUser } from '../../../auth/presentation/decorators/current-user.decorator';
+import { CurrentUser } from '../../../merchant-auth/presentation/decorators/current-user.decorator';
 import { StockOutDto } from '../dtos/stock-out.dto';
 import { AdjustStockDto } from '../dtos/adjust-stock.dto';
 import { StockInDto } from '../dtos/stock-in.dto';

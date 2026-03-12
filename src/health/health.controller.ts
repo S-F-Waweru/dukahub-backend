@@ -1,4 +1,4 @@
-import { Get, Injectable } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import {
   DiskHealthIndicator,
   HealthCheck,
@@ -7,7 +7,7 @@ import {
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 
-@Injectable()
+@Controller('health')
 export class HealthController {
   constructor(
     private health: HealthCheckService,
@@ -25,8 +25,8 @@ export class HealthController {
       () => this.memory.checkRSS('memory_res', 150 * 1024 * 1024),
       () =>
         this.disk.checkStorage('storage', {
-          threshold: 1024 * 1024,
-          path: '/',
+          thresholdPercent: 0.9,
+          path: process.platform === 'win32' ? 'C:\\' : '/',
         }),
     ]);
   }

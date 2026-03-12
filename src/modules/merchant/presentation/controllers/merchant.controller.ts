@@ -7,6 +7,8 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Post,
+  Logger,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -21,8 +23,10 @@ import { UpdatePaymentInfoUseCase } from '../../application/use-cases/update-pay
 import { UpdateMerchantDto } from '../dto/update-merchant.dto';
 import { UpdatePaymentInfoDto } from '../dto/update-payment-info.dto';
 import { MerchantResponseDto } from '../dto/merchant-response.dto';
-import { CurrentUser } from '../../../auth/presentation/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
+import { CurrentUser } from '../../../merchant-auth/presentation/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../../../merchant-auth/presentation/guards/jwt-auth.guard';
+import { CreateMerchantUseCase } from '../../application/use-cases/create-merchant.use-case';
+import { CreateMerchantDto } from '../dto/create-merchant.dto';
 
 @ApiTags('Merchant')
 @ApiBearerAuth()
@@ -33,7 +37,28 @@ export class MerchantController {
     private readonly getMerchantUseCase: GetMerchantUseCase,
     private readonly updateMerchantUseCase: UpdateMerchantUseCase,
     private readonly updatePaymentInfoUseCase: UpdatePaymentInfoUseCase,
+    private readonly createMerchantUseCase: CreateMerchantUseCase,
   ) {}
+
+  logger = new Logger(MerchantController.name)
+
+  @Post()
+  @ApiOperation({
+    summary: 'Create merchant',
+    description: 'Create a new merchant',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Merchant created successfully',
+    type: MerchantResponseDto,
+  })
+  async createMerchant(
+    @Body() dto: CreateMerchantDto,
+    @CurrentUser('merchantId') merchantId: string,
+  ) {
+
+    await this.createMerchantUseCase.execute(dto, merchantId);
+  }
 
   @Get('me')
   @ApiOperation({

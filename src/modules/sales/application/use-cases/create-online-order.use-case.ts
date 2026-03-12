@@ -1,5 +1,5 @@
 // src/modules/sales/application/use-cases/create-online-order.use-case.ts
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { IOrderRepository } from '../../domain/repositories/order.repository.interface';
 import { ICustomerRepository } from '../../domain/repositories/customer.repository.interface';
 
@@ -11,6 +11,7 @@ import { OrderCreatedEvent } from '../../domain/events/order-created.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IProductVariantRepository } from '../../../inventory/domain/interface/product-variant.repository.interface';
 import { FulfillmentInfo } from '../../domain/entities/fulfillment-info.vo';
+import { OrderChannel } from '../../domain/enums/sales-module.enums';
 
 export interface CreateOnlineOrderDto {
   merchantId: string;
@@ -103,11 +104,12 @@ export class CreateOnlineOrderUseCase {
     const orderNumber = OrderNumber.generate();
 
     // 5. Create order entity
-    const order = Order.createOnlineOrder({
+    const order = Order.create({
       orderNumber,
       merchantId: dto.merchantId,
       customerId: dto.customerId,
       items: orderItems,
+      channel: OrderChannel.ONLINE,
       fulfillmentInfo,
       notes: dto.notes,
     });
@@ -122,9 +124,9 @@ export class CreateOnlineOrderUseCase {
         savedOrder.id,
         savedOrder.orderNumber.value,
         savedOrder.merchantId,
-        savedOrder.customerId,
         savedOrder.total.value,
         'ONLINE',
+        savedOrder.customerId,
       ),
     );
 

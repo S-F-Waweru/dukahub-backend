@@ -3,7 +3,6 @@ import { Injectable, Inject } from '@nestjs/common';
 import { IOrderRepository } from '../../domain/repositories/order.repository.interface';
 import { OrderNotFoundException } from '../../domain/exceptions/sales-module.exceptions';
 
-]
 @Injectable()
 export class GetOrderUseCase {
   constructor(

@@ -1,5 +1,5 @@
 // src/modules/sales/application/use-cases/create-pos-order.use-case.ts
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { IOrderRepository } from '../../domain/repositories/order.repository.interface';
 import { ICustomerRepository } from '../../domain/repositories/customer.repository.interface';
 
@@ -9,6 +9,7 @@ import { OrderNumber } from '../../domain/value-objects/order-number.vo';
 import { OrderCreatedEvent } from '../../domain/events/order-created.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IProductVariantRepository } from 'src/modules/inventory/domain/interface/product-variant.repository.interface';
+import { OrderChannel } from '../../domain/enums/sales-module.enums';
 
 export interface CreatePOSOrderDto {
   merchantId: string;
@@ -81,17 +82,19 @@ export class CreatePOSOrderUseCase {
     const orderNumber = OrderNumber.generate();
 
     // 4. Create order entity
-    const order = Order.createPOSOrder({
+    const order = Order.create({
       orderNumber,
       merchantId: dto.merchantId,
       customerId: dto.customerId,
       items: orderItems,
+      channel: OrderChannel.POS,
       notes: dto.notes,
     });
 
     // 5. Persist order
     const savedOrder = await this.orderRepo.save(order);
 
+    //todo chaeck the order for the parameters
     // 6. Emit domain event
     this.eventEmitter.emit(
       'order.created',
@@ -99,8 +102,8 @@ export class CreatePOSOrderUseCase {
         savedOrder.id,
         savedOrder.orderNumber.value,
         savedOrder.merchantId,
-        savedOrder.customerId,
         savedOrder.total.value,
+        // savedOrder.customerId,
         'POS',
       ),
     );

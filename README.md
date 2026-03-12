@@ -255,7 +255,7 @@ query {
 }
 
 mutation {
-  createProduct(input: {
+  FcreateProduct(input: {
     name: "Product Name"
     sku: "SKU-001"
     price: 1000

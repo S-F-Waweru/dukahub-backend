@@ -9,6 +9,8 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  Logger,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -20,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 
 import { ProductResponseDto } from '../dtos/product-response.dto';
-import { CurrentUser } from 'src/modules/auth/presentation/decorators/current-user.decorator';
+import { CurrentUser } from 'src/modules/merchant-auth/presentation/decorators/current-user.decorator';
 import { CreateProductDto } from '../dtos/create-product.dto';
 import { CreateProductUseCase } from '../../application/use-cases/create-product-use-case.service';
 import { GetLowStockProductUseCase } from '../../application/use-cases/get-low-stock-product.usecase';
@@ -29,10 +31,11 @@ import { UpdateProductDto } from '../dtos/update-product.dto';
 import { DeleteProductUseCase } from '../../application/use-cases/delete-product.usecase';
 import { UpdateProductUseCase } from '../../application/use-cases/update-product.usecase';
 import { GetProductUseCase } from '../../application/use-cases/get-product.usecase';
+import { JwtAuthGuard } from '../../../merchant-auth/presentation/guards/jwt-auth.guard';
 
 @ApiTags('Inventory')
 @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('inventory/products')
 class InventoryController {
   private readonly createProductUseCase: CreateProductUseCase;
@@ -47,6 +50,7 @@ class InventoryController {
   ) {
     this.createProductUseCase = createProductUseCase;
   }
+  logger = new Logger(InventoryController.name)
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -66,6 +70,8 @@ class InventoryController {
     @Body() dto: CreateProductDto,
     @CurrentUser('merchantId') merchantId: string,
   ) {
+    this.logger.log(`Creating Merchant`, merchantId);
+    this.logger.log(merchantId);
     const result = await this.createProductUseCase.execute(dto, merchantId);
     return {
       success: true,
