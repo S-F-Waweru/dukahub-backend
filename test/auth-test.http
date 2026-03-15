@@ -9,6 +9,18 @@
 @token = fa2b05a3bb5589dc6713bbc70957eac028a58a4599136c52b85187e85ffcf352
 @resetToken = PASTE_RESET_TOKEN_HERE
 
+
+### Register
+POST {{baseUrl}}/merchant-auth/register
+Content-Type:  {{contentType}}
+
+{
+   "firstName" : "Samuel",
+   "lastName" : "Waweru",
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
 ### Login
 # @name login
 POST {{baseUrl}}/merchant-auth/login

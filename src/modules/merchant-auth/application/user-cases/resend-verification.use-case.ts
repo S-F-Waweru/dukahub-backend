@@ -1,12 +1,17 @@
 import {
   BadRequestException,
   Inject,
-  Injectable,
+  Injectable, Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
 import { IEmailVerificationTokenRepository } from '../../domain/interfaces/email-verification-token.repository.interface';
 import { Email } from '../../domain/value-objects/email.vo';
+import {UserRegisteredEvent} from "../../domain/events/user-registered.events";
+import {TokenGeneratorService} from "../services/token-generator.service";
+import {IEmailSenderService} from "../services/email-sender.service";
+import {EmailVerificationToken} from "../../domain/entities/email-verification-token.entity";
+import * as eventPublisherInterface from "../../domain/interfaces/event-publisher.interface";
 
 export interface ResendVerificationInput {
   email: string;
@@ -24,13 +29,18 @@ export class ResendVerificationUseCase {
     private readonly userRepository: IUserRepository,
     @Inject(IEmailVerificationTokenRepository)
     private readonly emailVerificationTokenRepository: IEmailVerificationTokenRepository,
-    // private readonly tokenGenerator: TokenGeneratorService,
-    // private readonly emailSender: IEmailSenderService,
+    private readonly tokenGenerator: TokenGeneratorService,
+    @Inject(eventPublisherInterface.IEventPublisher)
+    private readonly eventPublisher: eventPublisherInterface.IEventPublisher,
   ) {}
+
+  logger = new Logger(ResendVerificationUseCase.name)
 
   async execute(
     input: ResendVerificationInput,
-  ): Promise<ResendVerificationOutput> {
+  )
+      // : Promise<ResendVerificationOutput>
+  {
     // 1. Find user by email
     const email = new Email(input.email);
     const user = await this.userRepository.findByEmail(email);
@@ -48,44 +58,16 @@ export class ResendVerificationUseCase {
     await this.emailVerificationTokenRepository.deleteByUserId(user.id);
 
     // todo  : fix this use case and its dependencies
-    // // 4. Generate new verification token
-    // const verificationToken = this.tokenGenerator.generate();
-    // const expiresAt = new Date();
-    // expiresAt.setHours(expiresAt.getHours() + 24); // 24 hours expiry
+    // 4. Generate new verification token
+    const verificationTokenString = this.tokenGenerator.generate(32); // 64 hex characters
 
-    // 5. Create and save new verification token
-    // const tokenEntity = await this.emailVerificationTokenRepository.save({
-    //   tokenHash: verificationToken, // In production, hash this!
-    //   userId: user.id,
-    //   expiresAt: expiresAt,
-    //   _tokenHash: '',
-    //   _userId: '',
-    //   _expiresAt: undefined,
-    //   _isUsed: false,
-    //   validate: function (): void {
-    //     throw new BadRequestException('Function not implemented.');
-    //   },
-    //   markAsUsed: function (): void {
-    //     throw new BadRequestException('Function not implemented.');
-    //   },
-    //   isExpired: function (): boolean {
-    //     throw new BadRequestException('Function not implemented.');
-    //   },
-    //   isValid: function (): boolean {
-    //     throw new BadRequestException('Function not implemented.');
-    //   },
-    //   isUsed: false,
-    //   usedAt: undefined,
-    //   _id: '',
-    //   _createdAt: undefined,
-    //   _updatedAt: undefined,
-    //   id: '',
-    //   createdAt: undefined,
-    //   updatedAt: undefined,
-    //   touch: function (): void {
-    //     throw new BadRequestException('Function not implemented.');
-    //   },
-    // });
+    const verificationToken = EmailVerificationToken.create(
+        verificationTokenString,
+        user.id,
+        new Date(Date.now() + 24 * 60 * 60 * 1000),
+    );
+
+    await this.emailVerificationTokenRepository.save(verificationToken);
 
     // 6. Send verification email
     // const emailSent = await this.emailSender.sendVerificationEmail(
@@ -94,13 +76,15 @@ export class ResendVerificationUseCase {
     //   verificationToken,
     // );
 
-    // if (!emailSent) {
-    //   throw new BadRequestException('Failed to send verification email');
-    // }
+    this.logger.debug("Reaching the email verification token");
+    await this.eventPublisher.publish(
+        new UserRegisteredEvent(
+            user.id,
+            user.email,
+            user.firstName,
+            user.merchantId,
+        ),
+    );
 
-    return {
-      success: true,
-      message: 'Verification email sent successfully',
-    };
   }
 }

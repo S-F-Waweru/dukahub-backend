@@ -1,11 +1,14 @@
 import {Inject, Injectable, NotFoundException} from "@nestjs/common";
 import {IProductRepository} from "../../domain/interface/product-repository.interface";
+import {IProductVariantRepository} from "../../domain/interface/product-variant.repository.interface";
 
 @Injectable()
 export class GetProductUseCase {
     constructor(
         @Inject(IProductRepository)
         private readonly productRepository: IProductRepository,
+        @Inject(IProductVariantRepository)
+        private readonly productVariantRepository: IProductVariantRepository,
     ) {
     }
 
@@ -16,7 +19,24 @@ export class GetProductUseCase {
             throw  new NotFoundException(`Product with id ${id} not found`)
         }
 
-        return product
+        const variants = await  this.productVariantRepository.findByProductId(product.id)
+
+        return {
+            id: product.id,
+            name: product.name,
+            description: product.description,
+            basePrice: product.basePrice.value,
+            totalStock: product.getTotalStock(),
+            hasLowStock: product.hasLowStock(),
+            isActive: product.isActive,
+            variants: variants.map(v => ({
+                id: v.id,
+                sku: v.sku.value,
+                attributes: v.attributes,
+                currentStock: v.currentStock,
+                sellingPrice: v.sellingPrice.value,
+            }))
+        }
     }
 
 }
