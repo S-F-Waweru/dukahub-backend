@@ -1,4 +1,4 @@
-import { DomainException } from '../../../../shared/domain/exceptions/domain.exeption';
+import { DomainException } from '../../../../shared/domain/exceptions/domain.exception';
 
 export class TransactionNotFoundException extends DomainException {
   constructor(id: string) {

@@ -2,8 +2,8 @@ import { BusinessName } from '../value-objects/business-name.vo';
 import { MerchantType } from '../enums/merchant-type.enum';
 import { KraPin } from '../value-objects/kra-pin.vo';
 import { MerchantStatus } from '../enums/merchant-status.enum';
-import { DomainException } from '../../../../shared/domain/exceptions/domain.exeption';
 import { BaseEntity } from '../../../../shared/domain/base.entity';
+import { DomainException } from '../../../../shared/domain/exceptions/domain.exception';
 
 export class Merchant extends BaseEntity {
   // todo : remove the payment configuration

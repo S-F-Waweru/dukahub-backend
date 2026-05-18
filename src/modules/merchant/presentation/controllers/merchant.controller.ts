@@ -20,13 +20,14 @@ import {
 import { GetMerchantUseCase } from '../../application/use-cases/get-merchant.use-case';
 import { UpdateMerchantUseCase } from '../../application/use-cases/update-merchant.use-case';
 import { UpdatePaymentInfoUseCase } from '../../application/use-cases/update-payment-info.use-case';
-import { UpdateMerchantDto } from '../dto/update-merchant.dto';
-import { UpdatePaymentInfoDto } from '../dto/update-payment-info.dto';
-import { MerchantResponseDto } from '../dto/merchant-response.dto';
+
 import { CurrentUser } from '../../../merchant-auth/presentation/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../../../merchant-auth/presentation/guards/jwt-auth.guard';
 import { CreateMerchantUseCase } from '../../application/use-cases/create-merchant.use-case';
-import { CreateMerchantDto } from '../dto/create-merchant.dto';
+import { MerchantResponseDto } from '../dtos/merchant-response.dto';
+import { CreateMerchantDto } from '../dtos/create-merchant.dto';
+import { UpdatePaymentInfoDto } from '../dtos/update-payment-info.dto';
+import { UpdateMerchantDto } from '../dtos/update-merchant.dto';
 
 @ApiTags('Merchant')
 @ApiBearerAuth()

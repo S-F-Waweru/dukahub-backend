@@ -1,7 +1,5 @@
 import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
-import { IProductVariantRepository } from '../../domain/interface/product-variant.repository.interface';
 import { Product } from '../../domain/entities/product.entity';
-import { IProductRepository } from '../../domain/interface/product-repository.interface';
 import { ProductVariant } from '../../domain/entities/product-variant.entity';
 import { Price } from '../../domain/value-objects/price.vo';
 import { SKU } from '../../domain/value-objects/sku.vo';
@@ -9,6 +7,8 @@ import { StockLevel } from '../../domain/value-objects/stock-level.vo';
 import { ProductCreatedEvent } from '../../domain/events/product-created.event';
 import { IEventPublisher } from 'src/modules/merchant-auth/domain/interfaces/event-publisher.interface';
 import { ReorderPoint } from '../../domain/value-objects/reorder-point.vo';
+import { IProductRepository } from '../../domain/interfaces/product-repository.interface';
+import { IProductVariantRepository } from '../../domain/interfaces/product-variant.repository.interface';
 
 export class CreateProductDto {
   name: string;
@@ -42,7 +42,8 @@ export class CreateProductUseCase {
 
   async execute(dto: CreateProductDto, merchantId: string) {
 
-    this.logger.log(merchantId)
+    this.logger.log(merchantId);
+    this.logger.debug('CreateProductUseCase.execute', dto);
     // 1. Check for duplicate SKUs if variants provided
     if (dto.hasVariants && dto.variants) {
       for (const variantDto of dto.variants) {
@@ -115,6 +116,6 @@ export class CreateProductUseCase {
     // );
     //
 
-    return { productId: savedProduct.id };
+    return { productId: savedProduct.id};
   }
 }

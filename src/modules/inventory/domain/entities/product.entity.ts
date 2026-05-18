@@ -2,7 +2,7 @@ import { BaseEntity } from 'src/shared/domain/base.entity';
 import { Price } from '../value-objects/price.vo';
 import { ReorderPoint } from '../value-objects/reorder-point.vo';
 import { ProductVariant } from './product-variant.entity';
-import { DomainException } from 'src/shared/domain/exceptions/domain.exeption';
+import { DomainException } from '../../../../shared/domain/exceptions/domain.exception';
 
 export class Product extends BaseEntity {
   private _name: string;

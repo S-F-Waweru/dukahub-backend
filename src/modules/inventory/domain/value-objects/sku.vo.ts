@@ -1,4 +1,4 @@
-import { DomainException } from "src/shared/domain/exceptions/domain.exeption";
+import { DomainException } from '../../../../shared/domain/exceptions/domain.exception';
 
 export class SKU {
   private readonly _value: string;

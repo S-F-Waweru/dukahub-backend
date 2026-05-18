@@ -17,7 +17,6 @@ import {
   ApiParam,
   ApiQuery,
 } from '@nestjs/swagger';
-import { StockInUseCase } from '../../application/use-cases/stock-in.usecae';
 import { StockOutUseCase } from '../../application/use-cases/stock-out.usecase';
 import { CurrentUser } from '../../../merchant-auth/presentation/decorators/current-user.decorator';
 import { StockOutDto } from '../dtos/stock-out.dto';
@@ -25,6 +24,7 @@ import { AdjustStockDto } from '../dtos/adjust-stock.dto';
 import { StockInDto } from '../dtos/stock-in.dto';
 import { GetStockMovementsUseCase } from '../../application/use-cases/get-stock-movements.usercase';
 import { AdjustStockUseCase } from '../../application/use-cases/adjust-stock.usecase';
+import { StockInUseCase } from '../../application/use-cases/stock-in.usecase';
 
 @ApiTags('Stock Management')
 @ApiBearerAuth()

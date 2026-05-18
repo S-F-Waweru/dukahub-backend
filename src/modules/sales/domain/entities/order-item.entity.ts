@@ -1,7 +1,7 @@
 import { BaseEntity } from '../../../../shared/domain/base.entity';
-import { DomainException } from '../../../../shared/domain/exceptions/domain.exeption';
 import { Money } from '../value-objects/money.vo';
 import { Quantity } from '../value-objects/quantity.vo';
+import { DomainException } from '../../../../shared/domain/exceptions/domain.exception';
 
 export class OrderItem extends BaseEntity {
   private _orderId: string;

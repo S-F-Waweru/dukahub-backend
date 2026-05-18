@@ -8,8 +8,8 @@ import { OrderItem } from '../../domain/entities/order-item.entity';
 import { OrderNumber } from '../../domain/value-objects/order-number.vo';
 import { OrderCreatedEvent } from '../../domain/events/order-created.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IProductVariantRepository } from 'src/modules/inventory/domain/interface/product-variant.repository.interface';
 import { OrderChannel } from '../../domain/enums/sales-module.enums';
+import { IProductVariantRepository } from '../../../inventory/domain/interfaces/product-variant.repository.interface';
 
 export interface CreatePOSOrderDto {
   merchantId: string;

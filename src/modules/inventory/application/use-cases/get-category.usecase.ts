@@ -1,5 +1,5 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { ICategoryRepository } from '../../domain/interface/category-repository.interface';
+import { ICategoryRepository } from '../../domain/interfaces/category-repository.interface';
 
 @Injectable()
 export class GetCategoryUseCase {

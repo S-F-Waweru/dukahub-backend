@@ -1,4 +1,4 @@
-import {DomainException} from "../../../../shared/domain/exceptions/domain.exeption";
+import { DomainException } from '../../../../shared/domain/exceptions/domain.exception';
 
 export class BusinessName {
     private readonly _value: string;
@@ -15,7 +15,7 @@ export class BusinessName {
 
         if (this._value.length < 2) {
             throw new DomainException('Business name must be at least 2 characters');
-        }
+    }
 
         if (this._value.length > 255) {
             throw new DomainException('Business name too long (max 255 characters)');

@@ -1,11 +1,11 @@
 import { BaseEntity } from '../../../../shared/domain/base.entity';
-import { DomainException } from '../../../../shared/domain/exceptions/domain.exeption';
 
 import {
   PaymentCompletedEvent,
   PaymentFailedEvent,
 } from '../events/payment-completed.event';
 import { PaymentMethod, TransactionStatus } from '../enums/payament.enum';
+import { DomainException } from '../../../../shared/domain/exceptions/domain.exception';
 
 export class Transaction extends BaseEntity {
   private readonly _orderId: string;

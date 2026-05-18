@@ -1,10 +1,10 @@
 import { BaseEntity } from '../../../../shared/domain/base.entity';
-import { DomainException } from '../../../../shared/domain/exceptions/domain.exeption';
 import { OrderNumber } from '../value-objects/order-number.vo';
 import { Money } from '../value-objects/money.vo';
 import { OrderItem } from './order-item.entity';
 import { OrderChannel, OrderStatus } from '../enums/sales-module.enums';
 import { FulfillmentInfo } from './fulfillment-info.vo';
+import { DomainException } from '../../../../shared/domain/exceptions/domain.exception';
 
 export class Order extends BaseEntity {
   private readonly _orderNumber: OrderNumber;
@@ -297,6 +297,6 @@ export class Order extends BaseEntity {
       fulfillmentInfo: props.fulfillmentInfo,
       notes: props.notes,
       status: props.status,
-    })
+    });
   }
 }

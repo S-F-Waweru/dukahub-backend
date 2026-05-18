@@ -1,13 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { IProductRepository } from '../../domain/interface/product-repository.interface';
-import { IProductVariantRepository } from '../../domain/interface/product-variant.repository.interface';
-import { IStockMovementRepository } from '../../domain/interface/stock-movement.repsotory.interface';
 import { VariantNotFoundException } from '../../domain/exceptions/index.exceptions';
 import {
   MovementType,
   StockMovement,
 } from '../../domain/entities/stock-movement.entity';
-import { LowStockDetectedEvent } from '../../domain/events/low-stock-detected.event';
+import { IProductVariantRepository } from '../../domain/interfaces/product-variant.repository.interface';
+import { IStockMovementRepository } from '../../domain/interfaces/stock-movement.repository.interface';
 
 export class StockOutDto {
   variantId: string;

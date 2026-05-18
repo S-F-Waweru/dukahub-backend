@@ -2,8 +2,8 @@ import {Injectable} from "@nestjs/common";
 import {ProductVariantSchema} from "../schema/product-variant.schema";
 import { Repository } from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
-import {IProductVariantRepository} from "../../../domain/interface/product-variant.repository.interface";
 import {ProductVariant} from "../../../domain/entities/product-variant.entity";
+import { IProductVariantRepository } from '../../../domain/interfaces/product-variant.repository.interface';
 
 @Injectable()
 export class ProductVariantRepository implements IProductVariantRepository {

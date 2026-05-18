@@ -1,11 +1,11 @@
 import { AdjustStockDto } from '../../presentation/dtos/adjust-stock.dto';
-import { IProductVariantRepository } from '../../domain/interface/product-variant.repository.interface';
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import {
   MovementType,
   StockMovement,
 } from '../../domain/entities/stock-movement.entity';
-import { IStockMovementRepository } from '../../domain/interface/stock-movement.repsotory.interface';
+import { IStockMovementRepository } from '../../domain/interfaces/stock-movement.repository.interface';
+import { IProductVariantRepository } from '../../domain/interfaces/product-variant.repository.interface';
 
 Injectable();
 export class AdjustStockUseCase {

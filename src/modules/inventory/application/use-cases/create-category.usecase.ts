@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ICategoryRepository } from '../../domain/interface/category-repository.interface';
 import { Category, CategoryType } from '../../domain/entities/category.entity';
+import { ICategoryRepository } from '../../domain/interfaces/category-repository.interface';
 
 export class CreateCategoryDto {
     name: string;

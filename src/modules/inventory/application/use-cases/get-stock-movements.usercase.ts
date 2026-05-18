@@ -1,5 +1,6 @@
-import {IStockMovementRepository} from "../../domain/interface/stock-movement.repsotory.interface";
+
 import {Inject} from "@nestjs/common";
+import { IStockMovementRepository } from '../../domain/interfaces/stock-movement.repository.interface';
 
 export class GetStockMovementsUseCase {
     constructor(

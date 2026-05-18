@@ -2,7 +2,7 @@ import { Email } from '../value-objects/email.vo';
 import { PhoneNumber } from '../value-objects/phone-number.vo';
 import { Money } from '../value-objects/money.vo';
 import { BaseEntity } from '../../../../shared/domain/base.entity';
-import { DomainException } from '../../../../shared/domain/exceptions/domain.exeption';
+import { DomainException } from '../../../../shared/domain/exceptions/domain.exception';
 
 export class Customer extends BaseEntity {
   private readonly _merchantId: string;

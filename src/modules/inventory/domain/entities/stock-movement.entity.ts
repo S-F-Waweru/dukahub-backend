@@ -1,5 +1,5 @@
 import { BaseEntity } from 'src/shared/domain/base.entity';
-import { DomainException } from 'src/shared/domain/exceptions/domain.exeption';
+import { DomainException } from '../../../../shared/domain/exceptions/domain.exception';
 
 export class StockMovement extends BaseEntity {
   private _variantId: string;

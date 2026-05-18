@@ -1,33 +1,35 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StockController } from './presentation/controllers/stock-controller';
-import { ProductSchema } from './infarastructure/perisistence/schema/product.schema';
-import { ProductVariantSchema } from './infarastructure/perisistence/schema/product-variant.schema';
-import { StockMovementSchema } from './infarastructure/perisistence/schema/stock-movement.schema';
 import { CreateProductUseCase } from './application/use-cases/create-product-use-case.service';
 import { UpdateProductUseCase } from './application/use-cases/update-product.usecase';
 import { DeleteProductUseCase } from './application/use-cases/delete-product.usecase';
 import { GetProductUseCase } from './application/use-cases/get-product.usecase';
-import { StockInUseCase } from './application/use-cases/stock-in.usecae';
 import { StockOutUseCase } from './application/use-cases/stock-out.usecase';
 import { AdjustStockUseCase } from './application/use-cases/adjust-stock.usecase';
 import { GetStockMovementsUseCase } from './application/use-cases/get-stock-movements.usercase';
 import { GetLowStockProductUseCase } from './application/use-cases/get-low-stock-product.usecase';
 import { ListProductUseCase } from './application/use-cases/list-product.usecase';
-import { IProductRepository } from './domain/interface/product-repository.interface';
-import { ProductRepository } from './infarastructure/perisistence/reposotories/product.repository';
-import { IProductVariantRepository } from './domain/interface/product-variant.repository.interface';
-import { ProductVariantRepository } from './infarastructure/perisistence/reposotories/product-variant.repository';
-import { IStockMovementRepository } from './domain/interface/stock-movement.repsotory.interface';
-import { StockMovementRepository } from './infarastructure/perisistence/reposotories/stock-movement.repository';
+
 import InventoryController from './presentation/controllers/inventory-controller';
-import {ListCategoriesUseCase} from "./application/use-cases/list-categgory.usecase";
-import {CreateCategoryUseCase} from "./application/use-cases/create-category.usecase";
-import {GetCategoryUseCase} from "./application/use-cases/get-category.usecase";
-import {CategoryRepository} from "./infarastructure/perisistence/reposotories/category.repository";
-import {ICategoryRepository} from "./domain/interface/category-repository.interface";
-import {CategorySchema} from "./infarastructure/perisistence/schema/category.schema";
-import {CategoryController} from "./presentation/controllers/category.controller";
+import { StockInUseCase } from './application/use-cases/stock-in.usecase';
+import { CreateCategoryUseCase } from './application/use-cases/create-category.usecase';
+import { ListCategoriesUseCase } from './application/use-cases/list-category.usecase';
+import { GetCategoryUseCase } from './application/use-cases/get-category.usecase';
+import { IProductRepository } from './domain/interfaces/product-repository.interface';
+import { ProductRepository } from './infrastructure/persistence/reposotories/product.repository';
+import { IProductVariantRepository } from './domain/interfaces/product-variant.repository.interface';
+import { ProductVariantRepository } from './infrastructure/persistence/reposotories/product-variant.repository';
+import { IStockMovementRepository } from './domain/interfaces/stock-movement.repository.interface';
+import { StockMovementRepository } from './infrastructure/persistence/reposotories/stock-movement.repository';
+import { ICategoryRepository } from './domain/interfaces/category-repository.interface';
+import { CategoryRepository } from './infrastructure/persistence/reposotories/category.repository';
+import { CategorySchema } from './infrastructure/persistence/schema/category.schema';
+import { CategoryController } from './presentation/controllers/category.controller';
+import { ProductSchema } from './infrastructure/persistence/schema/product.schema';
+import { ProductVariantSchema } from './infrastructure/persistence/schema/product-variant.schema';
+import { StockMovementSchema } from './infrastructure/persistence/schema/stock-movement.schema';
+
 
 const useCases = [
   CreateProductUseCase,

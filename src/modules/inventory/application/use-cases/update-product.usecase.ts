@@ -1,23 +1,23 @@
-import {Inject, Injectable, NotFoundException} from "@nestjs/common";
-import {IProductRepository} from "../../domain/interface/product-repository.interface";
-import {UpdateProductDto} from "../../presentation/dtos/update-product.dto";
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { UpdateProductDto } from '../../presentation/dtos/update-product.dto';
+import { IProductRepository } from '../../domain/interfaces/product-repository.interface';
 
 @Injectable()
 export class UpdateProductUseCase {
-constructor(
+  constructor(
     @Inject(IProductRepository)
     private readonly productRepository: IProductRepository,
-) {}
+  ) {}
 
-    async execute(id: string, dto: UpdateProductDto, merchantId: string) {
-     const  product = await this.productRepository.findById(id)
-        if (!product) {
-            throw new NotFoundException('Product not found');
-        }
-
-      product.update(dto)
-
-        await this.productRepository.update(product)
-        return product
+  async execute(id: string, dto: UpdateProductDto, merchantId: string) {
+    const product = await this.productRepository.findById(id);
+    if (!product) {
+      throw new NotFoundException('Product not found');
     }
+
+    product.update(dto);
+
+    await this.productRepository.update(product);
+    return product;
+  }
 }

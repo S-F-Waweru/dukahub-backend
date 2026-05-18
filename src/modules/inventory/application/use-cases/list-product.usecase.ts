@@ -1,6 +1,6 @@
-import {Inject, Injectable} from "@nestjs/common";
-import {IProductVariantRepository} from "../../domain/interface/product-variant.repository.interface";
-import {IProductRepository} from "../../domain/interface/product-repository.interface";
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { IProductRepository } from '../../domain/interfaces/product-repository.interface';
+import { IProductVariantRepository } from '../../domain/interfaces/product-variant.repository.interface';
 
 @Injectable()
 export class ListProductUseCase {
@@ -11,6 +11,8 @@ export class ListProductUseCase {
         private readonly productVariantRepository: IProductVariantRepository
     ) {
     }
+
+    logger = new Logger(ListProductUseCase.name);
 
     //todo add pagination,
     async execute(merchantId:  string, categoryId?: string){
@@ -41,6 +43,9 @@ export class ListProductUseCase {
             }))
         })
     }
+
+
+        this.logger.debug(results)
         return results
     }
 }

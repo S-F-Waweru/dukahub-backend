@@ -1,6 +1,7 @@
-import { IProductVariantRepository } from '../../domain/interface/product-variant.repository.interface';
+
 import { Inject, Injectable } from '@nestjs/common';
-import { IProductRepository } from '../../domain/interface/product-repository.interface';
+import { IProductRepository } from '../../domain/interfaces/product-repository.interface';
+import { IProductVariantRepository } from '../../domain/interfaces/product-variant.repository.interface';
 
 @Injectable()
 export class GetLowStockProductUseCase {

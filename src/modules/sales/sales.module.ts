@@ -36,9 +36,7 @@ import { OrderRepository } from './infrastructure/repositories/order.repositorie
 import { InventoryModule } from '../inventory/inventory.module';
 import { OrdersController } from './presentation/controllers/orders.controllers';
 import { CustomersController } from './presentation/controllers/customers.controller';
-import { StockInUseCase } from '../inventory/application/use-cases/stock-in.usecae';
-import { IStockMovementRepository } from '../inventory/domain/interface/stock-movement.repsotory.interface';
-import { StockMovementRepository } from '../inventory/infarastructure/perisistence/reposotories/stock-movement.repository';
+import { StockInUseCase } from '../inventory/application/use-cases/stock-in.usecase';
 
 const useCases = [
   // Order Management

@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { OrderCancelledEvent } from '../../domain/events/order-cancelled.event';
 import { IOrderRepository } from '../../domain/repositories/order.repository.interface';
-import { StockInUseCase } from '../../../inventory/application/use-cases/stock-in.usecae';
+import { StockInUseCase } from '../../../inventory/application/use-cases/stock-in.usecase';
 
 @Injectable()
 export class OrderCancelledHandler {

@@ -1,6 +1,4 @@
-// domain/value-objects/stock-level.vo.ts
-
-import { DomainException } from 'src/shared/domain/exceptions/domain.exeption';
+import { DomainException } from '../../../../shared/domain/exceptions/domain.exception';
 
 export class StockLevel {
   private readonly _value: number;
