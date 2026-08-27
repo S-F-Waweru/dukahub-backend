@@ -7,7 +7,7 @@ import {
 import { IStockMovementRepository } from '../../domain/interfaces/stock-movement.repository.interface';
 import { IProductVariantRepository } from '../../domain/interfaces/product-variant.repository.interface';
 
-Injectable();
+@Injectable()
 export class AdjustStockUseCase {
   constructor(
     @Inject(IProductVariantRepository)
@@ -20,7 +20,7 @@ export class AdjustStockUseCase {
     const { variantId, newQuantity, reason } = dto;
 
     const variantExist =
-      await this.productVariantRepository.findById(variantId);
+      await this.productVariantRepository.findById(variantId, merchantId);
 
     if (!variantExist) {
       throw new NotFoundException(`Variant ${variantId} not found`);
@@ -29,10 +29,12 @@ export class AdjustStockUseCase {
     const quantityDifference = newQuantity - variantExist.currentStock;
 
     if (quantityDifference > 0) {
-      variantExist.decreaseStock(quantityDifference);
-    } else {
       variantExist.increaseStock(quantityDifference);
+    } else if (quantityDifference < 0) {
+      variantExist.decreaseStock(Math.abs(quantityDifference));
     }
+
+    await this.productVariantRepository.update(variantExist);
 
     // 4. Create movement record
     const movement = StockMovement.create(

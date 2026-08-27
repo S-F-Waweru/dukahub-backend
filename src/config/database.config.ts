@@ -17,9 +17,9 @@ export const getDatabaseConfig = (
     //   Auto Load all Schemas
     entities: [__dirname + '/../**/*.schema{.ts,.js}'],
 
-    //   Synchronize only in development
-    synchronize: isProduction,
-    logging: isProduction,
+    // Synchronize only in development. Production should use migrations.
+    synchronize: !isProduction,
+    logging: !isProduction,
     ssl: isProduction
       ? {
           rejectUnauthorized: true,

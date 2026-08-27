@@ -2,7 +2,7 @@ import { ProductVariant } from '../entities/product-variant.entity';
 import { SKU } from '../value-objects/sku.vo';
 
 export interface IProductVariantRepository {
-  findById(id: string): Promise<ProductVariant | null>;
+  findById(id: string, merchantId?: string): Promise<ProductVariant | null>;
   findBySKU(sku: string, merchantId: string): Promise<ProductVariant | null>
   save(variant: ProductVariant): Promise<ProductVariant>;
   update(variant: ProductVariant): Promise<ProductVariant>;

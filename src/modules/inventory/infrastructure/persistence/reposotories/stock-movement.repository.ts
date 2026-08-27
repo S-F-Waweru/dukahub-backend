@@ -24,10 +24,11 @@ export class StockMovementRepository implements IStockMovementRepository {
 
   async findByVariantId(
     variantId: string,
+    merchantId: string,
     limit: number = 50,
   ): Promise<StockMovement[]> {
     const schemas = await this.repo.find({
-      where: { variantId },
+      where: { variantId, merchantId },
       order: { createdAt: 'DESC' },
       take: limit,
     });

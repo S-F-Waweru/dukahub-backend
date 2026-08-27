@@ -42,7 +42,10 @@ export class CreatePOSOrderUseCase {
     const orderItems: OrderItem[] = [];
 
     for (const item of dto.items) {
-      const variant = await this.variantRepo.findById(item.variantId);
+      const variant = await this.variantRepo.findById(
+        item.variantId,
+        dto.merchantId,
+      );
 
       if (!variant) {
         throw new BadRequestException(

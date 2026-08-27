@@ -26,7 +26,7 @@ export class StockOutUseCase {
   ) {}
   async execute(dto: StockOutDto, userId: string, merchantId: string) {
     // 1. get variant
-    const variant = await this.variantRepo.findById(dto.variantId);
+    const variant = await this.variantRepo.findById(dto.variantId, merchantId);
     if (!variant) {
       throw new VariantNotFoundException(dto.variantId);
     }
@@ -34,7 +34,7 @@ export class StockOutUseCase {
     const previousStock = variant.currentStock;
     variant.decreaseStock(dto.quantity);
     // 3. update variant
-    this.variantRepo.update(variant);
+    await this.variantRepo.update(variant);
     // 4. create movement record
     const movement = StockMovement.create(
       variant.id,

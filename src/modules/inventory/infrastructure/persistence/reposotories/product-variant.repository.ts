@@ -12,8 +12,18 @@ export class ProductVariantRepository implements IProductVariantRepository {
         private repo: Repository<ProductVariantSchema>,
     ) {}
 
-    async findById(id: string): Promise<ProductVariant | null> {
-        const schema = await this.repo.findOne({ where: { id } });
+    async findById(id: string, merchantId?: string): Promise<ProductVariant | null> {
+        if (!merchantId) {
+            const schema = await this.repo.findOne({ where: { id } });
+            return schema ? this.toDomain(schema) : null;
+        }
+
+        const schema = await this.repo
+            .createQueryBuilder('variant')
+            .innerJoin('variant.product', 'product')
+            .where('variant.id = :id', { id })
+            .andWhere('product.merchantId = :merchantId', { merchantId })
+            .getOne();
         return schema ? this.toDomain(schema) : null;
     }
 

@@ -17,10 +17,12 @@ enum Environment {
 
 class EnvironmentVariables {
   @IsEnum(Environment)
-  NODE_ENV: Environment;
+  @IsOptional()
+  NODE_ENV?: Environment;
 
   @IsNumber()
-  Port: string;
+  @IsOptional()
+  PORT?: number;
 
   //Database
   @IsString()
@@ -29,7 +31,7 @@ class EnvironmentVariables {
   @IsNumber()
   DB_PORT: number;
   @IsString()
-  DB_USERNAME: string;
+  DB_USER: string;
 
   @IsString()
   DB_PASSWORD: string;

@@ -45,6 +45,10 @@ export class Order extends BaseEntity {
     this._fulfillmentInfo = props.fulfillmentInfo;
     this._notes = props.notes;
     this._status = props.status || OrderStatus.PENDING;
+    this._subtotal = this.calculateSubtotal();
+    this._deliveryFee = this.calculateDeliveryFee();
+    this._total = this._subtotal.add(this._deliveryFee);
+    this.validate();
   }
 
   // Validation
@@ -257,25 +261,29 @@ export class Order extends BaseEntity {
     cancelledAt: Date | undefined;
     cancellationReason: string | undefined;
   }) {
-    return new Order({
+    const order = new Order({
+      id: param.id,
       orderNumber: new OrderNumber(param.orderNumber),
       merchantId: param.merchantId,
       customerId: param.customerId,
       items: param.items,
-      // subtotal: param.subtotal,
-      // deliveryFee: param.deliveryFee,
-      // total: param.total,
       status: param.status,
       channel: param.channel,
       fulfillmentInfo: param.fulfillmentInfo,
-      // paymentId: param.paymentId,
       notes: param.notes,
-      // paidAt: param.paidAt,
-      // shippedAt: param.shippedAt,
-      // deliveredAt: param.deliveredAt,
-      // cancelledAt: param.cancelledAt,
-      // cancellationReason: param.cancellationReason,
     });
+
+    order._subtotal = new Money(Number(param.subtotal));
+    order._deliveryFee = new Money(Number(param.deliveryFee));
+    order._total = new Money(Number(param.total));
+    order._paymentId = param.paymentId;
+    order._paidAt = param.paidAt;
+    order._shippedAt = param.shippedAt;
+    order._deliveredAt = param.deliveredAt;
+    order._cancelledAt = param.cancelledAt;
+    order._cancellationReason = param.cancellationReason;
+
+    return order;
   }
 
   static create(props: {

@@ -1,8 +1,7 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ConfigService } from '@nestjs/config';
-import { Inject } from '@nestjs/common';
 import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
 
 export interface JwtPayload {
@@ -21,19 +20,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get('JWT_ACCESS_SECRET') || 'fallback-secret', // ✅ Add fallback
+      secretOrKey: configService.getOrThrow<string>('JWT_ACCESS_SECRET'),
     });
   }
 
   async validate(payload: JwtPayload) {
-    // Verify user still exists and is active
     const user = await this.userRepository.findById(payload.userId);
 
     if (!user || !user.isActive()) {
       throw new UnauthorizedException('User not found or inactive');
     }
 
-    // This gets attached to request.user
     return {
       userId: payload.userId,
       merchantId: payload.merchantId,

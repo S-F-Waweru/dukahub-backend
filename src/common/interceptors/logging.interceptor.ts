@@ -26,7 +26,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
     //   Log Request body in development(sanitized)
 
-    if (process.env.NODE_ENV !== 'development') {
+    if (process.env.NODE_ENV === 'development') {
       // todo fix this sanitize bug : Sanitize 😎😎
       const sanitizedBody = this.sanitizeBody(body);
       if (Object.keys(sanitizedBody).length > 0) {
@@ -69,6 +69,8 @@ export class LoggingInterceptor implements NestInterceptor {
       'currentPassword',
       'token',
       'refreshToken',
+      'accessToken',
+      'authorization',
     ];
 
     sensitiveFields.forEach((field) => {

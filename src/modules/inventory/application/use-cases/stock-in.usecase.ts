@@ -27,7 +27,7 @@ export class StockInUseCase {
 
   async execute(dto: StockInDto, userId: string, merchantId: string) {
     // 1. Get variant
-    const variant = await this.variantRepo.findById(dto.variantId);
+    const variant = await this.variantRepo.findById(dto.variantId, merchantId);
     if (!variant) {
       throw new VariantNotFoundException(dto.variantId);
     }

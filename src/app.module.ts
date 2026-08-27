@@ -8,7 +8,7 @@ import { AuthModule } from './modules/merchant-auth/auth.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { MerchantModule } from './modules/merchant/merchant.module';
 // import { HealthModule } from './health/health.module';
-// import { validate } from './config/env.validation';
+import { validate } from './config/env.validation';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/all-exception.filter';
@@ -31,6 +31,7 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      validate,
     }),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
@@ -41,8 +42,8 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
         password: process.env.DB_PASSWORD || 'root',
         database: process.env.DB_NAME || 'dukahub_db',
         entities: [__dirname + '/**/*.schema{.ts,.js}'],
-        synchronize: true,
-        logging: true,
+        synchronize: process.env.NODE_ENV === 'development',
+        logging: process.env.NODE_ENV === 'development',
       }),
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 10 }]),

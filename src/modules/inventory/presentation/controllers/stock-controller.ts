@@ -25,10 +25,11 @@ import { StockInDto } from '../dtos/stock-in.dto';
 import { GetStockMovementsUseCase } from '../../application/use-cases/get-stock-movements.usercase';
 import { AdjustStockUseCase } from '../../application/use-cases/adjust-stock.usecase';
 import { StockInUseCase } from '../../application/use-cases/stock-in.usecase';
+import { JwtAuthGuard } from '../../../merchant-auth/presentation/guards/jwt-auth.guard';
 
 @ApiTags('Stock Management')
 @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('inventory/stock')
 export class StockController {
   constructor(

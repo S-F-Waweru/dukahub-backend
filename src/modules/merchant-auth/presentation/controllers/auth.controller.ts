@@ -161,8 +161,6 @@ export class AuthController {
     ) {
         const refreshToken = req.cookies['refreshToken'];
 
-        console.log('Debug: Logout user with ID:', userId, 'and token:', refreshToken);
-
         await this.logoutUserUseCase.execute({userId, refreshToken});
 
         res.clearCookie('refreshToken');

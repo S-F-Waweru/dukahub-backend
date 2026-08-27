@@ -49,56 +49,20 @@ export class User extends BaseEntity {
     lastName: string,
     merchantId: string,
   ): User {
-    console.log('=== DEBUG: User.create() called ===');
-    console.log('debug: email parameter:', email, 'type:', typeof email);
-    console.log('debug: password parameter:', password, 'type:', typeof password, 'length:', password?.length);
-    console.log('debug: firstName parameter:', firstName);
-    console.log('debug: lastName parameter:', lastName);
-    console.log('debug: merchantId parameter:', merchantId);
-
-    // Check if password is undefined/null before creating Email VO
     if (password === undefined || password === null) {
-      console.error('ERROR: Password is undefined or null!');
       throw new BadRequestException('Password cannot be undefined or null');
     }
 
-    try {
-      console.log('=== Creating Email VO ===');
-      const emailVO = new Email(email);
-      console.log('debug: emailVO created successfully:', emailVO);
-    } catch (error) {
-      console.error('ERROR creating Email VO:', error);
-      throw error;
-    }
-
-    try {
-      console.log('=== Creating Password VO ===');
-      console.log('debug: About to create Password with value:', password);
-      const passwordVO = new Password(password);
-      console.log('debug: passwordVO created successfully:', passwordVO);
-      console.log('debug: passwordVO value:', passwordVO.value);
-      console.log('debug: passwordVO value length:', passwordVO.value.length);
-    } catch (error) {
-      console.error('ERROR creating Password VO:', error);
-      console.error('Error stack:', error.stack);
-      throw error;
-    }
-
-    // Now create both for real
     const emailVO = new Email(email);
     const passwordVO = new Password(password);
 
-    console.log('=== Creating User entity ===');
-    const user = new User({
+    return new User({
       email: emailVO,
       password: passwordVO,
       firstName,
       lastName,
       merchantId,
     });
-
-    console.log('=== User creation completed successfully ===');
-    return user;
   }
 
   static fromPersistence(props: {

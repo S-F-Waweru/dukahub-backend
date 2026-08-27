@@ -40,7 +40,6 @@ export class RegisterUserUseCase {
     dto: RegisterDto,
   ): Promise<{ id: string; email: string; message: string }> {
     try {
-      console.log('debug:(register)', dto);
       const merchantId = uuid()
       // Validate UUID format
       if (!this.isValidUUID(merchantId)) {

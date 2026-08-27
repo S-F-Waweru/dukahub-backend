@@ -11,6 +11,7 @@ export class GetStockMovementsUseCase {
     async execute(variantId: string, merchantId: string, limit: number) {
         return this.stockMovementRepository.findByVariantId(
             variantId,
+            merchantId,
             limit
         );
     }

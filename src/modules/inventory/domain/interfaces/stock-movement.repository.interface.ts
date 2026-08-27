@@ -2,7 +2,11 @@ import { StockMovement } from '../entities/stock-movement.entity';
 
 export interface IStockMovementRepository {
   save(movement: StockMovement): Promise<StockMovement>;
-  findByVariantId(variantId: string, limit: number): Promise<StockMovement[]>;
+  findByVariantId(
+    variantId: string,
+    merchantId: string,
+    limit: number,
+  ): Promise<StockMovement[]>;
 
   findByMerchantId(
     merchantId: string,
